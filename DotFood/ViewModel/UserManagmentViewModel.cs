@@ -1,6 +1,7 @@
 ﻿namespace DotFood.ViewModel
 {
-    public class VerifyEmailViewModel
+    public class UserManagmentViewModel
     {
+
     }
 }
