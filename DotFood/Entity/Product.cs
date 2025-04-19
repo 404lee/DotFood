@@ -36,7 +36,6 @@ namespace DotFood.Entity
 
         public byte[]? Image { get; set; }
 
-        // Additional useful fields
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
         public bool IsAvailable { get; set; } = true;

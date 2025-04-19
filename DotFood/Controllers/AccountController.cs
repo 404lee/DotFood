@@ -103,7 +103,6 @@ namespace DotFood.Controllers
             }
             return View(model);
         }
-        // In AccountController.cs
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
@@ -129,14 +128,12 @@ namespace DotFood.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 
-            // Update basic info
             user.UserName = model.Name;
             user.Country = model.Country;
             user.City = model.City;
 
             await _userManager.UpdateAsync(user);
 
-            // Add success message
             TempData["SuccessMessage"] = "Profile updated successfully";
             return RedirectToAction("EditProfile");
         }

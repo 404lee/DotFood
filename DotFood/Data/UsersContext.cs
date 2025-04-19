@@ -38,18 +38,18 @@ namespace DotFood.Data
                 .Property(od => od.Price)
                 .HasPrecision(18, 2);
 
-            // Fix Orders relationships (critical change)
+            // Orders relationships 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer)
                 .WithMany()
                 .HasForeignKey(o => o.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade
+                .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Vendor)
                 .WithMany()
                 .HasForeignKey(o => o.VendorId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade
+                .OnDelete(DeleteBehavior.Restrict); 
 
             // Product-Vendor relationship
             modelBuilder.Entity<Product>()

@@ -1,9 +1,11 @@
 ﻿using DotFood.Data;
 using DotFood.Entity;
+using DotFood.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using DotFood.ViewModel;
 
 
 namespace DotFood.Controllers
@@ -28,14 +30,13 @@ namespace DotFood.Controllers
 
         public async Task<IActionResult> Analytics()
         {
-            var analytics = new
+            var model = new UserManagementViewModel
             {
-                TotalUsers = await _userManager.Users.CountAsync(),
+                TotalRevenue = await _context.Orders.SumAsync(o => o.TotalPrice),
+                TotalVendors = (await _userManager.GetUsersInRoleAsync("vendor")).Count, 
                 TotalOrders = await _context.Orders.CountAsync(),
-                Revenue = await _context.Orders.SumAsync(o => o.TotalPrice)
             };
-
-            return View(analytics);
+            return View(model);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace DotFood.Entity
         [DataType(DataType.Currency)]
         public decimal TotalPrice { get; set; }
 
-        public string PaymentMethod { get; set; } = "Cash"; // Only cash for now
+        public string PaymentMethod { get; set; } = "Cash"; 
         public decimal DeliveryFee { get; set; } = 3.0m; // Fixed 3 JDs
 
         public virtual ICollection<OrderDetails> OrderDetails { get; set; }
