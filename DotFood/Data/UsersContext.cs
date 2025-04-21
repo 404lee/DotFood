@@ -13,6 +13,8 @@ namespace DotFood.Data
         public DbSet<Category> Category { get; set; }
         public DbSet<VendorStatus> VendorStatus { get; set; }
         public DbSet<OrderStatus> OrderStatus { get; set; }
+        public DbSet<UserAddress> UserAddress { get; set; }
+
 
         public UsersContext(DbContextOptions<UsersContext> options)
             : base(options) { }

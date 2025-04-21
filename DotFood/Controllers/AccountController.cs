@@ -5,6 +5,8 @@ using DotFood.ViewModel;
 using DotFood.Entity;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using DotFood.Data;
+
 
 
 namespace DotFood.Controllers
@@ -14,13 +16,20 @@ namespace DotFood.Controllers
         private readonly UserManager<Users> _userManager;
         private readonly SignInManager<Users> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UsersContext _db; 
 
-        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager, RoleManager<IdentityRole> roleManager)
+        public AccountController(
+            UserManager<Users> userManager,
+            SignInManager<Users> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            UsersContext db) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _db = db; 
         }
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -105,39 +114,122 @@ namespace DotFood.Controllers
             }
             return View(model);
         }
-        [Authorize]
+
+        //index
+        //[Authorize]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
+            if (user == null) return RedirectToAction("Login", "Account");
 
             var model = new EditProfileViewModel
             {
-                Name = user.UserName,
+                Name = user.FullName,
                 Country = user.Country,
-                City = user.City,
-                EmailModel = new ChangeEmailViewModel { NewEmail = user.Email }
+                City = user.City
             };
 
             return View(model);
         }
 
-        [Authorize]
+
         [HttpPost]
-        public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(EditProfileViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("EditProfile", model);
+            }
+
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
-            
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             user.UserName = model.Name;
+            user.FullName = model.Name;
             user.Country = model.Country;
             user.City = model.City;
 
-            await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user);
 
-            TempData["SuccessMessage"] = "Profile updated successfully";
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View("EditProfile", model);
+            }
+
+            TempData["SuccessMessage"] = "Profile updated successfully!";
             return RedirectToAction("EditProfile");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var model = new ChangePasswordViewModel();
+
+            return View(model);
+        }
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> ChangePassword([Bind(Prefix = "PasswordModel")] ChangePasswordViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View("Index", new EditProfileViewModel { PasswordModel = model });
+        //    }
+
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null)
+        //    {
+        //        await _signInManager.SignOutAsync();
+        //        return RedirectToAction("Login", "Account");
+        //    }
+        //    if (string.IsNullOrEmpty(model.CurrentPassword) ||
+        //        string.IsNullOrEmpty(model.NewPassword) ||
+        //        string.IsNullOrEmpty(model.ConfirmPassword))
+        //    {
+        //        ModelState.AddModelError(string.Empty, "All password fields are required");
+        //        return View("Index", new EditProfileViewModel { PasswordModel = model });
+        //    }
+        //    if (model.NewPassword != model.ConfirmPassword)
+        //    {
+        //        ModelState.AddModelError(string.Empty, "The new password and confirmation password do not match.");
+        //        return View("Index", new EditProfileViewModel { PasswordModel = model });
+        //    }
+        //    var result = await _userManager.ChangePasswordAsync(
+        //        user,
+        //        model.CurrentPassword,
+        //        model.NewPassword);
+
+        //    if (result.Succeeded)
+        //    {
+        //        await _signInManager.RefreshSignInAsync(user);
+        //        TempData["StatusMessage"] = "Password changed successfully!";
+        //        return RedirectToAction("Index");
+        //    }
+        //    AddErrors(result);
+        //    return View("Index", new EditProfileViewModel { PasswordModel = model });
+        //}
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
 
         [HttpPost]

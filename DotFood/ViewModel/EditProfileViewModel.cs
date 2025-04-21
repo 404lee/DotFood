@@ -23,7 +23,5 @@ namespace DotFood.ViewModel
             ErrorMessage = "City name must start with a letter and contain only letters and spaces (no digits or special characters).")]
         public string City { get; set; }
 
-        public ChangeEmailViewModel EmailModel { get; set; } = new();
-        public ChangePasswordViewModel PasswordModel { get; set; } = new();
     }
 }
