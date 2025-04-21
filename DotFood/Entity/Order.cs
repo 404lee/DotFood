@@ -27,5 +27,7 @@ namespace DotFood.Entity
 
         public virtual Users Customer { get; set; }
         public virtual Users Vendor { get; set; }
+        public virtual OrderStatus OrderStatus { get; set; }
+
     }
 }

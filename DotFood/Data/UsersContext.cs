@@ -58,12 +58,13 @@ namespace DotFood.Data
                 .HasForeignKey(p => p.VendorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // VendorStatus relationship
+            // Vendor-status relationship
             modelBuilder.Entity<VendorStatus>()
-                .HasOne(v => v.User)
-                .WithMany()
-                .HasForeignKey(v => v.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(v => v.User)           
+                .WithOne(u => u.VendorStatus)  
+                .HasForeignKey<VendorStatus>(v => v.UserId)  
+                .OnDelete(DeleteBehavior.Cascade);  
+
 
             // OrderDetails relationship
             modelBuilder.Entity<OrderDetails>()
@@ -90,6 +91,21 @@ namespace DotFood.Data
                 .WithMany()
                 .HasForeignKey(c => c.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Product-Category relationship
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Order Status 
+            modelBuilder.Entity<OrderStatus>()
+               .HasOne(os => os.Order)
+               .WithOne(o => o.OrderStatus)  
+               .HasForeignKey<OrderStatus>(os => os.OrderId) 
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

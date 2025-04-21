@@ -137,6 +137,7 @@ namespace DotFood.Controllers
             TempData["SuccessMessage"] = "Profile updated successfully";
             return RedirectToAction("EditProfile");
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]

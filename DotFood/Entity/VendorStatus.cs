@@ -3,14 +3,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DotFood.Entity
 {
+    public enum StoreStatus
+    {
+        Open,
+        Closed
+    }
     public class VendorStatus
     {
+
         [Key]
         public long Id { get; set; }
 
+
         [Required]
-        [StringLength(120)]
-        public string Status { get; set; }
+        public StoreStatus Status { get; set; }  
+
 
         [ForeignKey("User")]
         public string UserId { get; set; }
