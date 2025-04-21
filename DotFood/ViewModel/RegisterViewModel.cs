@@ -2,7 +2,7 @@
 
 namespace DotFood.ViewModel
 {
-    public class RegisterViewModel
+    public class RegisterViewModel : UserAddressViewModel
     {
         [Key]
         public int Id { get; set; }
@@ -10,8 +10,8 @@ namespace DotFood.ViewModel
         [Required(ErrorMessage = "Username is required")]
         [StringLength(20, MinimumLength = 8, ErrorMessage = "Username must be between {2} and {1} characters long")]
         [RegularExpression(@"^[A-Za-z][A-Za-z0-9]{7,19}$",
-            ErrorMessage = "Username must start with a letter and contain only letters and digits (no special characters).")]
-        public String Name { get; set; }
+            ErrorMessage = "Username must be 8 characters, start with a letter and contain only letters and digits (no special characters).")]
+        public String FullName { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
@@ -20,7 +20,7 @@ namespace DotFood.ViewModel
 
         [Required(ErrorMessage = "Role is required")]
         [Display(Name = "Register As")]
-        [RegularExpression(@"^(customer|vendor|admin)$", ErrorMessage = "Role must be one of the following: customer, vendor, or admin.")]
+        [RegularExpression(@"^(customer|vendor|admin)$", ErrorMessage = "Role must be one of the following: customer or vendor.")]
         public string Role { get; set; } = "customer";  
 
 

@@ -2,7 +2,8 @@
 
 namespace DotFood.ViewModel
 {
-    public class UserAddressViewModel
+    public class UserAddressViewModel 
+
     {
 
         [Required(ErrorMessage = "Country Name is required")]

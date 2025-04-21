@@ -35,13 +35,15 @@ namespace DotFood.Controllers
             {
                 var user = new Users
                 {
-                    UserName = model.Name,
+                    UserName = model.Email,
                     Email = model.Email,
+                    FullName = model.FullName,
                     Country = model.Country,
                     City = model.City,
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
                     if (!await _roleManager.RoleExistsAsync(model.Role))
@@ -127,7 +129,7 @@ namespace DotFood.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
-
+            
             user.UserName = model.Name;
             user.Country = model.Country;
             user.City = model.City;

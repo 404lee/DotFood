@@ -38,5 +38,28 @@ namespace DotFood.Controllers
             };
             return View(model);
         }
+
+        //[HttpPost]
+        //[Authorize(Roles = "vendor,admin")]
+        //public async Task<IActionResult> UpdateOrderStatus(long orderId, string status)
+        //{
+        //    var order = await _context.Orders.FindAsync(orderId);
+
+        //    if (order == null)
+        //        return NotFound();
+
+        //    var newStatus = new OrderStatus
+        //    {
+        //        OrderId = order.Id,
+        //        Status = status,
+        //        StatusDate = DateTime.Now
+        //    };
+
+        //    _context.OrderStatuses.Add(newStatus);
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction("OrderDetails", new { id = order.Id });
+        //}
+
     }
 }

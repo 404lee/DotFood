@@ -66,15 +66,8 @@ namespace DotFood
             app.UseRouting();
             app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                await next();
-                if (context.Response.StatusCode == 404)
-                {
-                    context.Request.Path = "/Home/Error";
-                    await next();
-                }
-            });
+            app.UseStatusCodePagesWithReExecute("/Home/Error");
+
 
             app.MapControllerRoute(
                 name: "default",
