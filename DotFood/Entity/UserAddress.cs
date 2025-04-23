@@ -6,7 +6,7 @@ namespace DotFood.Entity
     public class UserAddress
     {
         [Key]
-        public int Id { get; set; } // Required for EF to track this entity
+        public int Id { get; set; } 
 
         [Required]
         public string UserId { get; set; } // FK to the Identity user

@@ -1,5 +1,92 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@* @if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+} *@
+
+<div class="vendor-container">
+    <h3 class="vendor-title">Vendor Dashboard</h3>
+
+    <div class="vendor-actions">
+        <div class="button-container">
+            <a asp-action="ViewStore" class="vendor-btn view-store-btn">
+                View Store
+            </a>
+        </div>
+
+        <div class="button-container">
+            <a asp-action="AddItem" class="vendor-btn add-item-btn">
+                <span class="plus-icon">+</span> Add Item
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .vendor-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .vendor-title {
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: #333;
+        font-weight: 300;
+    }
+
+    .vendor-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .vendor-btn {
+        padding: 12.5px 30px;
+        border: 0;
+        border-radius: 100px;
+        background-color: #FFC107;
+        color: #000000;
+        font-weight: Bold;
+        transition: all 0.5s;
+        -webkit-transition: all 0.5s;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        width: 200px;
+        display: inline-block;
+    }
+
+        .vendor-btn:hover {
+            background-color: #FFD54F;
+            box-shadow: 0 0 20px #FFD54F50;
+            transform: scale(1.1);
+        }
+
+        .vendor-btn:active {
+            background-color: #FFA000;
+            transition: all 0.25s;
+            -webkit-transition: all 0.25s;
+            box-shadow: none;
+            transform: scale(0.98);
+        }
+
+    .plus-icon {
+        font-size: 1.3rem;
+        margin-right: 0.5rem;
+    }
+</style>

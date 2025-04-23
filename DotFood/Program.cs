@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using DotFood.Data;
-using DotFood.Models;
+using DotFood.ViewModels;
 using DotFood.Entity;
 
 namespace DotFood

@@ -48,23 +48,31 @@ namespace DotFood.Controllers
                     Email = model.Email,
                     FullName = model.FullName,
                     Country = model.Country,
-                    City = model.City,
+                    City = model.City
                 };
-
                 var result = await _userManager.CreateAsync(user, model.Password);
-
                 if (result.Succeeded)
                 {
                     if (!await _roleManager.RoleExistsAsync(model.Role))
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(model.Role)); 
+                        await _roleManager.CreateAsync(new IdentityRole(model.Role));
                     }
 
                     await _userManager.AddToRoleAsync(user, model.Role);
 
-                    return RedirectToAction("Login", "Account");
-                }
+                    await _signInManager.SignInAsync(user, isPersistent: false);
 
+                    if (await _userManager.IsInRoleAsync(user, "Customer"))
+                        return RedirectToAction("Index", "Customer");
+
+                    if (await _userManager.IsInRoleAsync(user, "Vendor"))
+                        return RedirectToAction("Index", "Vendor");
+
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                        return RedirectToAction("Index", "Admin");
+
+                    return RedirectToAction("Index", "Home");
+                }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
@@ -72,50 +80,42 @@ namespace DotFood.Controllers
             }
             return View(model);
         }
+
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
-                    if (result.Succeeded)
-                    {
-                        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault(); 
-                        if (role == "admin")
-                        {
-                            return RedirectToAction("Index", "Admin");
-                        }
-                        else if (role == "vendor")
-                        {
-                            return RedirectToAction("Index", "Vendor");
-                        }
-                        else if (role == "customer")
-                        {
-                            return RedirectToAction("Index", "Customer");
-                        }
-                    }
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                }
-                else
+                if (result.Succeeded)
                 {
-                    ModelState.AddModelError("", "User does not exist.");
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+
+                    if (await _userManager.IsInRoleAsync(user, "Customer"))
+                        return RedirectToAction("Index", "Customer");
+
+                    if (await _userManager.IsInRoleAsync(user, "Vendor"))
+                        return RedirectToAction("Index", "Vendor");
+
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                        return RedirectToAction("Index", "Admin");
+
+                    return RedirectToAction("Index", "Home");
                 }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
+
             return View(model);
         }
 
-        //index
         //[Authorize]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
@@ -169,19 +169,19 @@ namespace DotFood.Controllers
             return RedirectToAction("EditProfile");
         }
 
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> ChangePassword()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            var model = new ChangePasswordViewModel();
+        //[Authorize]
+        //[HttpGet]
+        //public async Task<IActionResult> ChangePassword()
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null)
+        //    {
+        //        return RedirectToAction("Login", "Account");
+        //    }
+        //    var model = new ChangePasswordViewModel();
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
 
         //[HttpPost]
         //[ValidateAntiForgeryToken]

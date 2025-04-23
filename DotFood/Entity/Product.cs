@@ -34,8 +34,6 @@ namespace DotFood.Entity
         [Range(0, long.MaxValue)]
         public long Quantity { get; set; }
 
-        public byte[]? Image { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
         public bool IsAvailable { get; set; } = true;

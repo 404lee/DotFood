@@ -1,7 +1,6 @@
-using System.Diagnostics;
+using DotFood.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using DotFood.Models;
-using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 
 namespace DotFood.Controllers;
