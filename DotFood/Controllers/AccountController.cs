@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DotFood.Data;
 
-
-
 namespace DotFood.Controllers
 {
     public class AccountController : Controller

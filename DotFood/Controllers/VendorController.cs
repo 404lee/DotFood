@@ -46,7 +46,7 @@ namespace DotFood.Controllers
         {
             var categories = await _context.Category.ToListAsync();
 
-            var model = new AddProductViewModel
+            var model = new ProductViewModel
             {
                 Categories = categories
             };
@@ -56,7 +56,7 @@ namespace DotFood.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddItem(AddProductViewModel model)
+        public async Task<IActionResult> AddItem(ProductViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -65,6 +65,16 @@ namespace DotFood.Controllers
             }
 
             var vendor = await _userManager.GetUserAsync(User);
+
+            bool isDuplicate = await _context.Products
+            .AnyAsync(p => p.VendorId == vendor.Id && p.Name.ToLower() == model.Name.ToLower() && p.CategoryId == model.CategoryId);
+
+            if (isDuplicate)
+            {
+                ModelState.AddModelError("Name", "A product with the same name already exists.");
+                model.Categories = await _context.Category.ToListAsync();
+                return View(model);
+            }
             var product = new Product
             {
                 Name = model.Name,

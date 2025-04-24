@@ -9,10 +9,10 @@ namespace DotFood.Entity
         [Key]
         public long Id { get; set; }
 
-        [ForeignKey("Customer")]
+        [ForeignKey("CustomerId")]
         public String CustomerId { get; set; }
 
-        [ForeignKey("Vendor")]
+        [ForeignKey("VendorId")]
         public string VendorId { get; set; }
 
         public DateTime OrderDate { get; set; }

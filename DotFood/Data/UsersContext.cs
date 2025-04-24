@@ -15,7 +15,6 @@ namespace DotFood.Data
         public DbSet<OrderStatus> OrderStatus { get; set; }
         public DbSet<UserAddress> UserAddress { get; set; }
 
-
         public UsersContext(DbContextOptions<UsersContext> options)
             : base(options) { }
 
@@ -34,11 +33,12 @@ namespace DotFood.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Category>().HasData(
-                 new Category { Id = 1, Name = "Food" },
-                 new Category { Id = 2, Name = "Drinks" },
-                 new Category { Id = 3, Name = "Snacks" }
-             );
+                new Category { Id = 1, Name = "Food" },
+                new Category { Id = 2, Name = "Drinks" },
+                new Category { Id = 3, Name = "Snacks" }
+            );
 
+            // Set precision for money fields
             modelBuilder.Entity<Order>()
                 .Property(o => o.TotalPrice)
                 .HasPrecision(18, 2);
@@ -51,66 +51,75 @@ namespace DotFood.Data
                 .Property(od => od.Price)
                 .HasPrecision(18, 2);
 
+            // Order - Users (Customer)
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer)
-                .WithMany()
+                .WithMany(u => u.CustomerOrders)
                 .HasForeignKey(o => o.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Order - Users (Vendor)
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Vendor)
-                .WithMany()
+                .WithMany(u => u.VendorOrders)
                 .HasForeignKey(o => o.VendorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Product - Vendor
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Vendor)
                 .WithMany(u => u.Products)
                 .HasForeignKey(p => p.VendorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // VendorStatus - User
             modelBuilder.Entity<VendorStatus>()
                 .HasOne(v => v.User)
                 .WithOne(u => u.VendorStatus)
                 .HasForeignKey<VendorStatus>(v => v.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // OrderDetails - Order
             modelBuilder.Entity<OrderDetails>()
                 .HasOne(od => od.Order)
                 .WithMany(o => o.OrderDetails)
                 .HasForeignKey(od => od.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // OrderDetails - Product
             modelBuilder.Entity<OrderDetails>()
                 .HasOne(od => od.Product)
                 .WithMany()
                 .HasForeignKey(od => od.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Cart - Customer
             modelBuilder.Entity<Cart>()
                 .HasOne(c => c.Customer)
                 .WithMany()
                 .HasForeignKey(c => c.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Cart - Product
             modelBuilder.Entity<Cart>()
                 .HasOne(c => c.Product)
                 .WithMany()
                 .HasForeignKey(c => c.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Product - Category
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Order - OrderStatus
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.OrderStatus)
                 .WithOne(os => os.Order)
                 .HasForeignKey<OrderStatus>(os => os.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }

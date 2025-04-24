@@ -9,12 +9,12 @@ namespace DotFood.Entity
         public long Id { get; set; }
 
         [Required]
-        [ForeignKey("Category")]
+        [ForeignKey("CategoryId")]
         public long CategoryId { get; set; }
         public virtual Category Category { get; set; }
 
         [Required]
-        [ForeignKey("Vendor")]
+        [ForeignKey("VendorId")]
         public string VendorId { get; set; }
         public virtual Users Vendor { get; set; }
 

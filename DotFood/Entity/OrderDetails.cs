@@ -8,10 +8,10 @@ namespace DotFood.Entity
         [Key]
         public long Id { get; set; }
 
-        [ForeignKey("Order")]
+        [ForeignKey("OrderId")]
         public long OrderId { get; set; }
 
-        [ForeignKey("Product")]
+        [ForeignKey("ProductId")]
         public long ProductId { get; set; }
 
         public long Quantity { get; set; }

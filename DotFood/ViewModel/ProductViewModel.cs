@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DotFood.Entity;
+using System.ComponentModel.DataAnnotations;
 
 namespace DotFood.ViewModels
 {
-    public class AddProductViewModel
+    public class ProductViewModel
     {
         [Required]
         [Display(Name = "Product Name")]
@@ -11,6 +12,7 @@ namespace DotFood.ViewModels
         [Required]
         [Display(Name = "Category")]
         public long CategoryId { get; set; }
+        //public Category Category { get; internal set; }
 
         public List<DotFood.Entity.Category> Categories { get; set; } = new();
 
@@ -24,6 +26,5 @@ namespace DotFood.ViewModels
         [Required]
         [Range(1, 100000)]
         public long Quantity { get; set; }
-
     }
 }

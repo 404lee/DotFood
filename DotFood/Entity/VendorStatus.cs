@@ -19,7 +19,7 @@ namespace DotFood.Entity
         public StoreStatus Status { get; set; }  
 
 
-        [ForeignKey("User")]
+        [ForeignKey("UserId")]
         public string UserId { get; set; }
         public virtual Users User { get; set; }
     }

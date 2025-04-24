@@ -19,7 +19,7 @@ namespace DotFood.Entity
         [Required]
         public OrderState Status { get; set; } 
 
-        [ForeignKey("Order")]
+        [ForeignKey("OrderId")]
         public long? OrderId { get; set; }
         public virtual Order Order { get; set; }
     }
