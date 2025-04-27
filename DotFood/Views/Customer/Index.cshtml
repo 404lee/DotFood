@@ -1,7 +1,45 @@
 ﻿@{
-    ViewData["Title"] = "Customer Page";
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
 }
 
-<div class="text-center">
-    <h1 class="display-4">Customer</h1>
+<div class="container mt-5">
+    <h1>Welcome to the Customer Portal</h1>
+    <p>Browse our latest products and make purchases.</p>
+    <div class="row">
+        <!-- Example Product Card 1 -->
+        <div class="col-md-4">
+            <div class="card">
+                <img src="~/Images/Burger.jfif" class="card-img-top" alt="Food 1">
+                <div class="card-body">
+                    <h5 class="card-title">Burger</h5>
+                    <p class="card-text">Delicious juicy burger ready to eat.</p>
+                    <a href="/Customer/ViewItems/1" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example Product Card 2 -->
+        <div class="col-md-4">
+            <div class="card">
+                <img src="~/images/Pizza.jfif" class="card-img-top" alt="Food 2">
+                <div class="card-body">
+                    <h5 class="card-title">Pizza</h5>
+                    <p class="card-text">Cheesy hot pizza slice for you.</p>
+                    <a href="/Customer/ViewItems/2" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example Product Card 3 -->
+        <div class="col-md-4">
+            <div class="card">
+                <img src="~/images/desserts.jfif" class="card-img-top" alt="Food 3">
+                <div class="card-body">
+                    <h5 class="card-title">Dessert</h5>
+                    <p class="card-text">Sweet dessert to end your meal.</p>
+                    <a href="/Customer/ViewItems/3" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

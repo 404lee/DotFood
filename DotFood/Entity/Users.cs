@@ -14,7 +14,8 @@ namespace DotFood.Entity
         public virtual VendorStatus VendorStatus { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<Order> CustomerOrders { get; set; } 
-        public virtual ICollection<Order> VendorOrders { get; set; }   
+        public virtual ICollection<Order> VendorOrders { get; set; }       
 
+        
     }
 }
