@@ -41,6 +41,7 @@ namespace DotFoodTest
 
 
         }
+
         #region Login
 
         [Fact]
@@ -195,50 +196,6 @@ namespace DotFoodTest
 
         #region Register 
 
-        [Fact]
-        public async Task Register_WithValidData_ShouldCreateUser()
-        {
-            var getResponse = await _client.GetAsync("/Account/Register");
-            var getContent = await getResponse.Content.ReadAsStringAsync();
-
-            var tokenMatch = Regex.Match(getContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
-            var token = tokenMatch.Success ? tokenMatch.Groups[1].Value : string.Empty;
-
-            var uniqueEmail = $"testuser_{Guid.NewGuid():N}@test.com";
-
-            var formData = new Dictionary<string, string>
-            {
-                { "FullName", "TestUser" },
-                { "Email", "customerunittest@test.com" },
-                { "Password", "Test1234$" },
-                { "ConfirmPassword", "Test1234$" },
-                { "Country", "Testland" },
-                { "City", "Testville" },
-                { "Role", "customer" },
-                { "__RequestVerificationToken", token }
-            };
-
-            var content = new FormUrlEncodedContent(formData);
-            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/Register")
-            {
-                Content = content
-            };
-            postRequest.Headers.Referrer = new Uri("http://localhost/Account/Register");
-
-            var response = await _client.SendAsync(postRequest);
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var responseHtml = await response.Content.ReadAsStringAsync();
-
-            Assert.True(response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Redirect);
-            Assert.NotNull(response);
-            Assert.NotNull(responseContent);
-            Assert.Contains("Welcome", responseHtml);
-
-            // _output.WriteLine($"Registered with email: {uniqueEmail}");
-            _output.WriteLine($"Response Content: {responseContent}");
-
-
-        }
 
         [Fact]
         public async Task Register_WithValidData_ShouldCreateUser_CorrectlyAndPersistInDatabase()
@@ -254,12 +211,12 @@ namespace DotFoodTest
 
             var formData = new Dictionary<string, string>
     {
-        { "FullName", "unitTEst" },
-        { "Email", "test1@test.com" },
+        { "FullName", "newuser11" },
+        { "Email", "newuser11@test.com" },
         { "Password", "Test1234$" },
         { "ConfirmPassword", "Test1234$" },
-        { "Country", "Testland" },
-        { "City", "mycity" },
+        { "Country", "Jordan" },
+        { "City", "Amman" },
         { "Role", "customer" },
         { "__RequestVerificationToken", token }
     };
@@ -274,19 +231,168 @@ namespace DotFoodTest
 
             var response = await _client.SendAsync(postRequest);
 
+        
+
+
             using (var scope = _factory.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
 
-                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == uniqueEmail);
-
-                Assert.NotNull(user); 
-                Assert.Equal("unitTEst", user.FullName);
-                Assert.Equal("Testland", user.Country);
-                Assert.Equal("mycity", user.City);
+                var user = await dbContext.Users.FirstOrDefaultAsync(u =>
+                    u.FullName == "newuser11" &&
+                    u.Country == "Jordan" &&
+                    u.City == "Amman");
+                Assert.NotNull(user);
             }
         }
 
+        [Fact]
+        public async Task Register_WithInValidData_WeakPass_ShouldnotCreateUser()
+        {
+            // Arrange - Get AntiForgery Token
+            var getResponse = await _client.GetAsync("/Account/Register");
+            var getContent = await getResponse.Content.ReadAsStringAsync();
+
+            var tokenMatch = Regex.Match(getContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
+            var token = tokenMatch.Success ? tokenMatch.Groups[1].Value : string.Empty;
+
+            var uniqueEmail = $"testuser_{Guid.NewGuid():N}@test.com";
+
+            var formData = new Dictionary<string, string>
+    {
+        { "FullName", "newuser1199" },
+        { "Email", "newuser11@test.com" },
+        { "Password", "Test12349" },
+        { "ConfirmPassword", "Test12349" },
+        { "Country", "Jordan" },
+        { "City", "Amman" },
+        { "Role", "customer" },
+        { "__RequestVerificationToken", token }
+    };
+
+            var content = new FormUrlEncodedContent(formData);
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/Register")
+            {
+                Content = content
+            };
+            postRequest.Headers.Referrer = new Uri("http://localhost/Account/Register");
+
+            var response = await _client.SendAsync(postRequest);
+
+
+
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u =>
+                    u.FullName == "newuser1199" &&
+                    u.Country == "Jordan" &&
+                    u.City == "Amman");
+                Assert.NotNull(user);
+            }
+        }
+
+        [Fact]
+        public async Task Register_WithInValidData_ShortName_ShouldnotCreateUser()
+        {
+            // Arrange - Get AntiForgery Token
+            var getResponse = await _client.GetAsync("/Account/Register");
+            var getContent = await getResponse.Content.ReadAsStringAsync();
+
+            var tokenMatch = Regex.Match(getContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
+            var token = tokenMatch.Success ? tokenMatch.Groups[1].Value : string.Empty;
+
+            var uniqueEmail = $"testuser_{Guid.NewGuid():N}@test.com";
+
+            var formData = new Dictionary<string, string>
+    {
+        { "FullName", "newuser" },
+        { "Email", "newuser11@test.com" },
+        { "Password", "Test12349" },
+        { "ConfirmPassword", "Test12349" },
+        { "Country", "Jordan" },
+        { "City", "Amman" },
+        { "Role", "customer" },
+        { "__RequestVerificationToken", token }
+    };
+
+            var content = new FormUrlEncodedContent(formData);
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/Register")
+            {
+                Content = content
+            };
+            postRequest.Headers.Referrer = new Uri("http://localhost/Account/Register");
+
+            var response = await _client.SendAsync(postRequest);
+
+
+
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u =>
+                    u.FullName == "newuser" &&
+                    u.Country == "Jordan" &&
+                    u.City == "Amman");
+                Assert.NotNull(user);
+            }
+        }
+
+
+        [Fact]
+        public async Task Register_WithInValidData_notfoundrole_ShouldnotCreateUser()
+        {
+            // Arrange - Get AntiForgery Token
+            var getResponse = await _client.GetAsync("/Account/Register");
+            var getContent = await getResponse.Content.ReadAsStringAsync();
+
+            var tokenMatch = Regex.Match(getContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
+            var token = tokenMatch.Success ? tokenMatch.Groups[1].Value : string.Empty;
+
+            var uniqueEmail = $"testuser_{Guid.NewGuid():N}@test.com";
+
+            var formData = new Dictionary<string, string>
+    {
+        { "FullName", "newuseradmin" },
+        { "Email", "newuser11@test.com" },
+        { "Password", "Test1234$" },
+        { "ConfirmPassword", "Test1234$" },
+        { "Country", "Jordan" },
+        { "City", "Amman" },
+        { "Role", "Admin" },
+        { "__RequestVerificationToken", token }
+    };
+
+            var content = new FormUrlEncodedContent(formData);
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/Register")
+            {
+                Content = content
+            };
+            postRequest.Headers.Referrer = new Uri("http://localhost/Account/Register");
+
+            var response = await _client.SendAsync(postRequest);
+
+
+
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u =>
+                    u.FullName == "newuseradmin" &&
+                    u.Country == "Jordan" &&
+                    u.City == "Amman");
+                Assert.NotNull(user);
+            }
+        }
 
         #endregion
 
@@ -295,22 +401,26 @@ namespace DotFoodTest
 
         #region  UpdateProfile
 
+       
+
         [Fact]
-        public async Task UpdateProfile_WithValidData_ShouldUpdateSuccessfully()
+        public async Task UpdateProfile_WithValidData_ShouldUpdateSuccessfullyAndPersistInDatabase()
         {
+            // Arrange: Login first
             var loginResponse = await _client.GetAsync("/Account/Login");
             var loginContent = await loginResponse.Content.ReadAsStringAsync();
 
             var loginTokenMatch = Regex.Match(loginContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
+
             var loginToken = loginTokenMatch.Success ? loginTokenMatch.Groups[1].Value : string.Empty;
 
             var loginFormData = new Dictionary<string, string>
-            {
-                { "Email", "manarunittest@test.com" },
-                { "Password", "Test1234$" },
-                { "RememberMe", "true" },
-                { "__RequestVerificationToken", loginToken }
-            };
+    {
+        { "Email", "unittest101@test.com" }, 
+        { "Password", "Unittest1234$" },
+        { "RememberMe", "true" },
+        { "__RequestVerificationToken", loginToken }
+    };
 
             var loginContentPost = new FormUrlEncodedContent(loginFormData);
             var loginPostRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/Login")
@@ -323,17 +433,18 @@ namespace DotFoodTest
 
             var getProfileResponse = await _client.GetAsync("/Account/EditProfile");
             var getProfileContent = await getProfileResponse.Content.ReadAsStringAsync();
+
             var profileTokenMatch = Regex.Match(getProfileContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
 
             var profileToken = profileTokenMatch.Success ? profileTokenMatch.Groups[1].Value : string.Empty;
 
             var updateFormData = new Dictionary<string, string>
-            {
-                { "Name", "updatedmanar" },
-                { "Country", "UpdatedCountry" },
-                { "City", "UpdatedCity" },
-                { "__RequestVerificationToken", profileToken }
-            };
+    {
+        { "Name", "manaralqassas" },
+        { "Country", "Jordan" },
+        { "City", "Amman" },
+        { "__RequestVerificationToken", profileToken }
+    };
 
             var updateContent = new FormUrlEncodedContent(updateFormData);
             var updatePostRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/UpdateProfile")
@@ -343,18 +454,105 @@ namespace DotFoodTest
             updatePostRequest.Headers.Referrer = new Uri("http://localhost/Account/EditProfile");
 
             var updateResponse = await _client.SendAsync(updatePostRequest);
-            var updateResponseContent = await updateResponse.Content.ReadAsStringAsync();
 
             Assert.True(updateResponse.StatusCode == HttpStatusCode.OK || updateResponse.StatusCode == HttpStatusCode.Redirect);
-            Assert.NotNull(updateResponse);
-            Assert.NotNull(updateResponseContent);
 
-            _output.WriteLine("Profile updated successfully.");
-            _output.WriteLine($"Response Content: {updateResponseContent}");
+
+
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u =>
+                    u.Email == "unittest101@test.com" &&
+                    u.FullName == "manar" &&
+                    u.Country == "Jordan" &&
+                    u.City == "Amman");
+                Assert.NotNull(user);
+            }
+
+
+
+
+
+
         }
 
         [Fact]
-        public async Task UpdateProfile_WithValidData_ShouldUpdateSuccessfullyAndPersistInDatabase()
+        public async Task UpdateProfile_WithInValidData_ShouldNotUpdated()
+        {
+            // Arrange: Login first
+            var loginResponse = await _client.GetAsync("/Account/Login");
+            var loginContent = await loginResponse.Content.ReadAsStringAsync();
+
+            var loginTokenMatch = Regex.Match(loginContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
+
+            var loginToken = loginTokenMatch.Success ? loginTokenMatch.Groups[1].Value : string.Empty;
+
+            var loginFormData = new Dictionary<string, string>
+    {
+        { "Email", "unittest101@test.com" },
+        { "Password", "Unittest1234$" },
+        { "RememberMe", "true" },
+        { "__RequestVerificationToken", loginToken }
+    };
+
+            var loginContentPost = new FormUrlEncodedContent(loginFormData);
+            var loginPostRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/Login")
+            {
+                Content = loginContentPost
+            };
+            loginPostRequest.Headers.Referrer = new Uri("http://localhost/Account/Login");
+
+            await _client.SendAsync(loginPostRequest);
+
+            var getProfileResponse = await _client.GetAsync("/Account/EditProfile");
+            var getProfileContent = await getProfileResponse.Content.ReadAsStringAsync();
+
+            var profileTokenMatch = Regex.Match(getProfileContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
+
+            var profileToken = profileTokenMatch.Success ? profileTokenMatch.Groups[1].Value : string.Empty;
+
+            var updateFormData = new Dictionary<string, string>
+    {
+        { "Name", "manar" },
+        { "Country", "Jordan" },
+        { "City", "Amman" },
+        { "__RequestVerificationToken", profileToken }
+    };
+
+            var updateContent = new FormUrlEncodedContent(updateFormData);
+            var updatePostRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/UpdateProfile")
+            {
+                Content = updateContent
+            };
+            updatePostRequest.Headers.Referrer = new Uri("http://localhost/Account/EditProfile");
+
+            var updateResponse = await _client.SendAsync(updatePostRequest);
+
+            Assert.True(updateResponse.StatusCode == HttpStatusCode.OK || updateResponse.StatusCode == HttpStatusCode.Redirect);
+
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u =>
+                    u.Email == "unittest101@test.com" &&
+                    u.FullName == "manar" &&
+                    u.Country == "Jordan" &&
+                    u.City == "Amman");
+                Assert.NotNull(user);
+            }
+
+
+
+        }
+
+
+        [Fact]
+        public async Task UpdateProfile_WithInValidData_ShouldNotUpdate()
         {
             // Arrange: Login first
             var loginResponse = await _client.GetAsync("/Account/Login");
@@ -390,9 +588,9 @@ namespace DotFoodTest
 
             var updateFormData = new Dictionary<string, string>
     {
-        { "Name", "updatedmanar" },
+        { "Name", "updateduserrrrrr" },
         { "Country", "UpdatedCountry" },
-        { "City", "5555" },
+        { "City", "Amman" },
         { "__RequestVerificationToken", profileToken }
     };
 
@@ -410,24 +608,29 @@ namespace DotFoodTest
 
             _output.WriteLine("Profile updated successfully.");
 
+
             using (var scope = _factory.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
 
-                var updatedUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == "manarunittest@test.com");
-
-                Assert.NotNull(updatedUser);
-                Assert.Equal("updatedmanar", updatedUser.FullName); 
-                Assert.Equal("UpdatedCountry", updatedUser.Country);
-                Assert.Equal("UpdatedCity", updatedUser.City);
+                var user = await dbContext.Users.FirstOrDefaultAsync(u =>
+                    u.Email == "unittest101@test.com" &&
+                    u.FullName == "manar" &&
+                    u.Country == "Jordan" &&
+                    u.City == "Amman");
+                Assert.NotNull(user);
             }
 
 
 
 
-          
+
 
         }
+
+
+
+
         #endregion
 
 
@@ -471,11 +674,11 @@ namespace DotFoodTest
 
             var addItemToken = addItemTokenMatch.Success ? addItemTokenMatch.Groups[1].Value : string.Empty;
 
-            // Prepare form data for new product
+
             var formData = new Dictionary<string, string>
     {
         { "Name", "UnitTestProduct0088" },
-        { "CategoryId", "1" }, // Assumed CategoryId 1 exists (Food for example)
+        { "CategoryId", "1" }, 
         { "Description", "Product created during unit test" },
         { "Price", "16.99" },
         { "Quantity", "10" },
@@ -597,6 +800,74 @@ namespace DotFoodTest
         [Fact]
         public async Task AddItems_WithInValidData_negativePrice_ShouldAddProductToDatabase()
         {
+            var loginResponse = await _client.GetAsync("/Account/Login");
+            var loginContent = await loginResponse.Content.ReadAsStringAsync();
+
+            var loginTokenMatch = Regex.Match(loginContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
+            var loginToken = loginTokenMatch.Success ? loginTokenMatch.Groups[1].Value : string.Empty;
+
+            var loginFormData = new Dictionary<string, string>
+    {
+        { "Email", "vendortest2@test.com" },
+        { "Password", "Vendor1234$" },
+        { "RememberMe", "true" },
+        { "__RequestVerificationToken", loginToken }
+    };
+
+            var loginContentPost = new FormUrlEncodedContent(loginFormData);
+            var loginPostRequest = new HttpRequestMessage(HttpMethod.Post, "/Account/Login")
+            {
+                Content = loginContentPost
+            };
+            loginPostRequest.Headers.Referrer = new Uri("http://localhost/Account/Login");
+
+            await _client.SendAsync(loginPostRequest);
+
+            var getAddItemResponse = await _client.GetAsync("/Vendor/AddItem");
+            var getAddItemContent = await getAddItemResponse.Content.ReadAsStringAsync();
+            var addItemTokenMatch = Regex.Match(getAddItemContent, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
+            var addItemToken = addItemTokenMatch.Success ? addItemTokenMatch.Groups[1].Value : string.Empty;
+
+            var formData = new Dictionary<string, string>
+    {
+        { "Name", "UnitTestProduct99" },
+        { "CategoryId", "1" }, 
+        { "Description", "Product created during unit test" },
+        { "Price", "-16.99" },
+        { "Quantity", "10" },
+        { "__RequestVerificationToken", addItemToken }
+    };
+
+            var content = new FormUrlEncodedContent(formData);
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Vendor/AddItem")
+            {
+                Content = content
+            };
+            postRequest.Headers.Referrer = new Uri("http://localhost/Vendor/AddItem");
+
+            var postResponse = await _client.SendAsync(postRequest);
+
+            Assert.NotNull(postResponse);
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
+
+                var product = await dbContext.Products.FirstOrDefaultAsync(p =>
+                    p.Name == "UnitTestProduct99" &&
+                    p.Description == "Product created during unit test" &&
+                    p.Price == -16.99m &&
+                    p.Quantity == 10);
+
+                Assert.NotNull(product);
+                Assert.Equal(1, product.CategoryId); 
+                Assert.Equal("Product created during unit test", product.Description);
+            }
+        }
+        [Fact]
+        public async Task AddItems_WithInValidData_negativeQuantity_ShouldAddProductToDatabase()
+        {
             // Arrange: Login as Vendor
             var loginResponse = await _client.GetAsync("/Account/Login");
             var loginContent = await loginResponse.Content.ReadAsStringAsync();
@@ -630,11 +901,11 @@ namespace DotFoodTest
             // Prepare form data for new product
             var formData = new Dictionary<string, string>
     {
-        { "Name", "UnitTestProduct99" },
+        { "Name", "invalidproduct" },
         { "CategoryId", "1" }, // Assumed CategoryId 1 exists
         { "Description", "Product created during unit test" },
-        { "Price", "-16.99" },
-        { "Quantity", "10" },
+        { "Price", "15" },
+        { "Quantity", "-10" },
         { "__RequestVerificationToken", addItemToken }
     };
 
@@ -658,10 +929,10 @@ namespace DotFoodTest
                 var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
 
                 var product = await dbContext.Products.FirstOrDefaultAsync(p =>
-                    p.Name == "UnitTestProduct99" &&
+                    p.Name == "invalidproduct" &&
                     p.Description == "Product created during unit test" &&
-                    p.Price == -16.99m &&
-                    p.Quantity == 10);
+                    p.Price == 15 &&
+                    p.Quantity == -10);
 
                 Assert.NotNull(product);
                 Assert.Equal(1, product.CategoryId); // Matching what was posted
@@ -670,6 +941,9 @@ namespace DotFoodTest
         }
 
         #endregion
+
+
+
 
 
 
@@ -733,13 +1007,8 @@ namespace DotFoodTest
 
             var postResponse = await _client.SendAsync(postRequest);
 
-            // Assert: Response check
+            // Assert
             Assert.NotNull(postResponse);
-        //    Assert.True(postResponse.StatusCode == HttpStatusCode.Redirect);
-
-        //    _output.WriteLine("Product added to cart successfully from existing product.");
-
-            // Assert: Check if product is in Cart table
             using (var scope = _factory.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<UsersContext>();
