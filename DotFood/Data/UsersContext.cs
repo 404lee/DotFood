@@ -24,7 +24,7 @@ namespace DotFood.Data
             {
                 optionsBuilder.UseSqlServer("Server=.;Database=DotFood;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=true");
             }
-
+           
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -53,7 +53,7 @@ namespace DotFood.Data
 
             // Order - Users (Customer)
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.Customer)
+                .HasOne(o => o.Customer)        
                 .WithMany(u => u.CustomerOrders)
                 .HasForeignKey(o => o.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
