@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*using Microsoft.AspNetCore.Mvc;
 using DotFood.Data;
 using DotFood.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +12,28 @@ using Microsoft.AspNetCore.Authorization;
 namespace DotFood.Controllers
 {
 
-    [Authorize(Roles = "customer")]
+    [Authorize(Roles = "Customer")]
 
+    public class CustomerController : Controller
+    {
+        private readonly UsersContext _context;
+
+        public CustomerController(UsersContext context)
+        {
+            _context = context;
+        }*/
+using Microsoft.AspNetCore.Mvc;
+using DotFood.Data;
+using DotFood.Entity;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using System;
+using Microsoft.AspNetCore.Authorization;
+
+namespace DotFood.Controllers
+{
+    [Authorize( Roles = "Customer")]
     public class CustomerController : Controller
     {
         private readonly UsersContext _context;

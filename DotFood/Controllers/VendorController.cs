@@ -5,10 +5,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using System;
 
 namespace DotFood.Controllers
 {
-    [Authorize(Roles = "vendor")]
+    [Authorize( Roles = "Vendor")]
+
     public class VendorController : Controller
     {
         private readonly UsersContext _context;
@@ -17,7 +21,7 @@ namespace DotFood.Controllers
         public VendorController(UsersContext context, UserManager<Users> userManager)
         {
             _context = context;
-            _userManager = userManager;
+           _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
