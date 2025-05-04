@@ -1,10 +1,11 @@
 ﻿using DotFood.Entity;
 using System.ComponentModel.DataAnnotations;
 
-namespace DotFood.ViewModels
+namespace DotFood.ViewModel
 {
-    public class ProductViewModel
+    public class ProductViewModel2
     {
+
         [Required]
         [Display(Name = "Product Name")]
         public string Name { get; set; }
@@ -14,12 +15,10 @@ namespace DotFood.ViewModels
         public long CategoryId { get; set; }
         //public Category Category { get; internal set; }
 
-        public string VendorId { get; set; }
-
         public List<DotFood.Entity.Category> Categories { get; set; } = new();
 
         [StringLength(500)]
-        public string Description{ get; set; }
+        public string Description { get; set; }
 
         [Required]
         [Range(0.01, 99999)]
@@ -29,11 +28,8 @@ namespace DotFood.ViewModels
         [Range(1, 100000)]
         public long Quantity { get; set; }
 
-        //public IFormFile? ImageFile { get; set; }  // For new uploads
-        //public string imageName { get; set; }
+        public IFormFile? ImageFile { get; set; }  // For new uploads
 
+        public string? imageName { get; set; }
     }
-
-
 }
-

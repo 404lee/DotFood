@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using DotFood.ViewModel;
 
 namespace DotFood.Controllers
 {
@@ -17,11 +18,13 @@ namespace DotFood.Controllers
     {
         private readonly UsersContext _context;
         private readonly UserManager<Users> _userManager;
-
-        public VendorController(UsersContext context, UserManager<Users> userManager)
+        private readonly IWebHostEnvironment _environment;
+        public VendorController(UsersContext context, UserManager<Users> userManager
+            ,IWebHostEnvironment environment)
         {
             _context = context;
            _userManager = userManager;
+            _environment = environment;
         }
 
         public async Task<IActionResult> Index()
@@ -50,7 +53,7 @@ namespace DotFood.Controllers
         {
             var categories = await _context.Category.ToListAsync();
 
-            var model = new ProductViewModel
+            var model = new ProductViewModel2
             {
                 Categories = categories
             };
@@ -60,8 +63,33 @@ namespace DotFood.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddItem(ProductViewModel model)
+        public async Task<IActionResult> AddItem(ProductViewModel2 model)
         {
+            //if(model.ImageFile == null || model.ImageFile.Length == 0) 
+            //{
+            //    ModelState.AddModelError("ImageFile", "Please upload an Image");
+            //    model.Categories = await _context.Category.ToListAsync();
+            //    return View(model);
+            //}
+
+            var wwwroot = _environment.WebRootPath + "/Images/";
+
+            //if (!Directory.Exists(wwwroot))
+            //{
+            //    Directory.CreateDirectory(wwwroot);
+            //}
+
+            Guid guid = Guid.NewGuid();
+
+            string fullPath = System.IO.Path.Combine(wwwroot, guid + model.ImageFile.FileName);
+
+            //using (var fileStream = new FileStream(fullPath, FileMode.Create))
+            //{
+            //    model.ImageFile.CopyTo(fileStream);
+            //}
+
+            model.imageName = guid + model.ImageFile.FileName;
+
             if (!ModelState.IsValid)
             {
                 model.Categories = await _context.Category.ToListAsync();
@@ -87,7 +115,8 @@ namespace DotFood.Controllers
                 Price = model.Price,
                 Quantity = model.Quantity,
                 VendorId = vendor.Id,
-                CreatedAt = DateTime.UtcNow //Coordinated Universal Time
+                CreatedAt = DateTime.UtcNow, //Coordinated Universal Time
+                imageName = model.imageName
             };
 
             _context.Products.Add(product);

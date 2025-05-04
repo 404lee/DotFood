@@ -15,6 +15,7 @@ namespace DotFood.Data
         public DbSet<OrderStatus> OrderStatus { get; set; }
         public DbSet<UserAddress> UserAddress { get; set; }
 
+
         public UsersContext(DbContextOptions<UsersContext> options)
             : base(options) { }
 

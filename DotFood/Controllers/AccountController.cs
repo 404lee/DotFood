@@ -26,7 +26,7 @@ namespace DotFood.Controllers
         public AccountController(
             UserManager<Users> userManager,
             SignInManager<Users> signInManager,
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<IdentityRole> roleManager,  
             UsersContext db,
             JwtHelper jwtHelper)
         {
@@ -257,8 +257,8 @@ namespace DotFood.Controllers
         {
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+   
+                      ModelState.AddModelError(string.Empty, error.Description);   }
         }
 
 

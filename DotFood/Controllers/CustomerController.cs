@@ -30,6 +30,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using DotFood.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace DotFood.Controllers
 {
@@ -37,23 +39,56 @@ namespace DotFood.Controllers
     public class CustomerController : Controller
     {
         private readonly UsersContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<Users> _userManager;
 
-        public CustomerController(UsersContext context)
+
+        public CustomerController(UsersContext context,RoleManager<IdentityRole> roleManager, UserManager<Users> userManager)
         {
             _context = context;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
+            //var products = await _context.Products
+            //    .Include(p => p.Category)
+            //    .ToListAsync();
+
+            var vendors = await _userManager.GetUsersInRoleAsync("vendor");
+
+            
+
+            return View(vendors);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ViewItems(string Id) 
+        {
+            var categories = await _context.Category.ToListAsync();
+
+            var productViewModel = new ProductViewModel
+            {
+                Categories = categories,
+                VendorId = Id,
+            };
+            return View(productViewModel);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> ViewProducts(string vendorId, long categoryId)
+        {
             var products = await _context.Products
-                .Include(p => p.Category)
+                .Where(p => p.VendorId == vendorId && p.CategoryId == categoryId)
                 .ToListAsync();
 
             return View(products);
         }
 
+        [HttpGet]
         public async Task<IActionResult> ViewCart()
         {
+
             var userId = User.Identity.Name;
             var customer = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserName == userId);
@@ -74,7 +109,7 @@ namespace DotFood.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(long productId)
         {
-            var userId = User.Identity.Name;
+            var userId = User.Identity.Name; //currentlly loged-in user
             var customer = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserName == userId);
 
@@ -91,14 +126,19 @@ namespace DotFood.Controllers
                 return RedirectToAction("Index");
             }
 
-            var cartItem = new Cart
-            {
-                CustomerId = customer.Id,
-                ProductId = product.Id
-            };
+            var existingCartItem = await _context.Cart
+                .FirstOrDefaultAsync(c => c.CustomerId == customer.Id && c.ProductId == product.Id);
 
-            _context.Cart.Add(cartItem);
-            await _context.SaveChangesAsync();
+            if (existingCartItem == null)
+            {
+                var cartItem = new Cart
+                {
+                    CustomerId = customer.Id,
+                    ProductId = product.Id
+                };
+                _context.Cart.Add(cartItem);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction("ViewCart");
         }
@@ -125,7 +165,7 @@ namespace DotFood.Controllers
             var customer = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserName == userId);
 
-            if (customer == null)
+            if (customer == null) // no loged-in user currentlly
             {
                 return RedirectToAction("Index", "Home");
             }
