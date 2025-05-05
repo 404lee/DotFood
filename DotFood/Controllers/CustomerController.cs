@@ -32,6 +32,7 @@ using System;
 using Microsoft.AspNetCore.Authorization;
 using DotFood.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using DotFood.Migrations;
 
 namespace DotFood.Controllers
 {
@@ -78,6 +79,10 @@ namespace DotFood.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewProducts(string vendorId, long categoryId)
         {
+            if (TempData["VendorError"] != null)
+            {   
+                ViewBag.VendorError = TempData["VendorError"].ToString();
+            }
             var products = await _context.Products
                 .Where(p => p.VendorId == vendorId && p.CategoryId == categoryId)
                 .ToListAsync();
@@ -88,7 +93,7 @@ namespace DotFood.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewCart()
         {
-
+           
             var userId = User.Identity.Name;
             var customer = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserName == userId);
@@ -121,6 +126,9 @@ namespace DotFood.Controllers
             var product = await _context.Products
                 .FirstOrDefaultAsync(p => p.Id == productId);
 
+            var ProductVendorId = product.VendorId;
+
+
             if (product == null)
             {
                 return RedirectToAction("Index");
@@ -133,6 +141,8 @@ namespace DotFood.Controllers
                 .Where(cart => cart.CustomerId == customer.Id)
                 .Include(cart => cart.Product)
                 .FirstOrDefaultAsync();
+
+            var currentVendorId = cartItemm?.Product.VendorId;  
 
             if (cart == null)
             {
@@ -172,8 +182,12 @@ namespace DotFood.Controllers
             }
             else
             {
-                TempData["VendorError"] = "You cannot add products from a different vendor in the same cart .";
-                return RedirectToAction("ViewCart");
+                if (ProductVendorId != currentVendorId)
+                {
+                    TempData["VendorError"] = "You cannot add products from a different vendor in the same cart .";
+                    return RedirectToAction("ViewProducts", 
+                        new { vendorId = ProductVendorId, categoryId = product.CategoryId});
+                }
 
             }
             return RedirectToAction("ViewCart");
@@ -237,46 +251,41 @@ namespace DotFood.Controllers
                 return RedirectToAction("ViewCart");
             }
 
-            var goupedByVendor = cartItems.GroupBy(c => c.Product.VendorId);
+            
+            var order = new Order
+            {
+                 CustomerId = customer.Id,
+                 VendorId = cartItems.First().Product.VendorId,
+                 OrderDate = DateTime.Now,
+                 TotalPrice = (decimal)(cartItems.Sum(c => c.TotalPrice) + 3.0),
+                 PaymentMethod = "Cash",
+                 DeliveryFee = 3.0m
+            };
 
-            //foreach (var vendorItems in goupedByVendor)
-            //{
+             _context.Orders.Add(order);
+             await _context.SaveChangesAsync();
 
-                //var vendorId = vendorItems.Key;
+             foreach (var cartItem in cartItems)
+             {
+                 var orderDetails = new OrderDetails
+                 {
+                     OrderId = order.Id,    
+                     ProductId = cartItem.ProductId,
+                     Id = cartItem.Id,
+                     Quantity = 1,
+                     Price = cartItem.Product.Price
+                 };
 
-                var order = new Order
-                {
-                    CustomerId = customer.Id,
-                    VendorId = cartItems.First().Product.VendorId,
-                    OrderDate = DateTime.Now,
-                    TotalPrice = (decimal)(cartItems.Sum(c => c.TotalPrice) + 3.0),
-                    PaymentMethod = "Cash",
-                    DeliveryFee = 3.0m
-                };
+                 _context.OrderDetails.Add(orderDetails);
+             }
 
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
-
-                foreach (var cartItem in cartItems)
-                {
-                    var orderDetails = new OrderDetails
-                    {
-                        OrderId = order.Id,
-                        ProductId = cartItem.ProductId,
-                        Id = cartItem.Id,
-                        Quantity = 1,
-                        Price = cartItem.Product.Price
-                    };
-
-                    _context.OrderDetails.Add(orderDetails);
-                }
-
-                _context.Cart.RemoveRange(cartItems);
-                await _context.SaveChangesAsync();
+             _context.Cart.RemoveRange(cartItems);
+             await _context.SaveChangesAsync();
             //}
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
         }
 
+        [HttpGet]
         public async Task<IActionResult> OrderConfirmation(long orderId)
         {
             var order = await _context.Orders
