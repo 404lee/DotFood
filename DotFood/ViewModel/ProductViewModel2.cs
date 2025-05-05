@@ -21,7 +21,7 @@ namespace DotFood.ViewModel
         public string Description { get; set; }
 
         [Required]
-        [Range(0.01, 99999)]
+        [Range(0.01, 99999)]    
         public decimal Price { get; set; }
 
         [Required]

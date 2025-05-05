@@ -147,30 +147,37 @@ namespace DotFood.Controllers
             
             var wwwroot = _environment.WebRootPath + "/Images/";
 
-            var extension = Path.GetExtension(model.ImageFile.FileName).ToLowerInvariant();
-
-            
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" ,".jfif"};
-
-            if (!allowedExtensions.Contains(extension))
+            if (model.ImageFile != null && model.ImageFile.Length > 0)
             {
-                ModelState.AddModelError("ImageFile", "Only image files (.jpg, .jpeg, .png, .gif, .jfif) are allowed.");
-            }
+                var extension = Path.GetExtension(model.ImageFile.FileName).ToLowerInvariant();
 
-            Guid guid = Guid.NewGuid();
 
-            string fullPath = System.IO.Path.Combine(wwwroot, guid + model.ImageFile.FileName);
 
-            if (allowedExtensions.Contains(extension))
-            {
-                using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
+
+                if (!allowedExtensions.Contains(extension))
                 {
-                    model.ImageFile.CopyTo(fileStream);
+                    ModelState.AddModelError("ImageFile", "Only image files (.jpg, .jpeg, .png, .gif, .jfif) are allowed.");
                 }
+
+                Guid guid = Guid.NewGuid();
+
+                string fullPath = System.IO.Path.Combine(wwwroot, guid + model.ImageFile.FileName);
+
+                if (allowedExtensions.Contains(extension))
+                {
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        model.ImageFile.CopyTo(fileStream);
+                    }
+                }
+
+                model.imageName = guid + model.ImageFile.FileName;
             }
-
-            model.imageName = guid + model.ImageFile.FileName;
-
+            else 
+            {
+                model.imageName = "";
+            }
             if (!ModelState.IsValid)
             {
                 model.Categories = await _context.Category.ToListAsync();

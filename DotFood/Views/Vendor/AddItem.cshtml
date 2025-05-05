@@ -37,21 +37,13 @@
         <input asp-for="Quantity" class="form-control" type="number" min="0" />
         <span asp-validation-for="Quantity" class="text-danger"></span>
     </div>
-    @* <div class="form-group"> *@
-    @*     <label asp-for="ImageFile">Upload Product Image</label> *@
-    @*     <br/> *@
-    @*     <input asp-for="ImageFile" class="form-control-file" type="file" accept="image/*" onchange="previewImage(this)"/> *@
-    @*     <span asp-validation-for="ImageFile" class="text-danger"></span> *@
-    @* </div> *@
-
+ 
      <div class="form-group">   
        <label asp-for="ImageFile">Upload Product Image</label>  
           <br/>
         <input asp-for="ImageFile" class="form-control-file" type="file" accept="image/*" />
         <span asp-validation-for="ImageFile" class="text-danger"></span> 
       </div>
-
-    @* <img id="imagePreview" class="img-thumbnail mt-2" style="max-width: 200px; display: none;" /> *@
 
     <br />
     <button type="submit" class="btn btn-primary">Add Product</button>

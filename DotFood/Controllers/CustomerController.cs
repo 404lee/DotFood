@@ -151,8 +151,7 @@ namespace DotFood.Controllers
                     _context.Cart.Add(cartItem);
                     await _context.SaveChangesAsync();
                 }
-            }
-            //return View("Index","Home"); 
+            } 
             else if (product.VendorId == cartItemm.Product.VendorId)
             {
                 var existingCartItem = await _context.Cart
@@ -171,10 +170,9 @@ namespace DotFood.Controllers
                     await _context.SaveChangesAsync();
                 }
             }
-
             else
             {
-                TempData["VendorError"] = "You cannot add products from a different vendor.";
+                TempData["VendorError"] = "You cannot add products from a different vendor in the same cart .";
                 return RedirectToAction("ViewCart");
 
             }
