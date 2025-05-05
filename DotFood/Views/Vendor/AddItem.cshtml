@@ -46,9 +46,9 @@
 
      <div class="form-group">   
        <label asp-for="ImageFile">Upload Product Image</label>  
-          <br/>  
-          <input asp-for="ImageFile" class="form-control-file" type="file" />  
-          <span asp-validation-for="ImageFile" class="text-danger"></span> 
+          <br/>
+        <input asp-for="ImageFile" class="form-control-file" type="file" accept="image/*" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span> 
       </div>
 
     @* <img id="imagePreview" class="img-thumbnail mt-2" style="max-width: 200px; display: none;" /> *@

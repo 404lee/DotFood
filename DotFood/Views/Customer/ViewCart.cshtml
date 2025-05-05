@@ -1,38 +1,144 @@
 ﻿@using DotFood.Entity
-@model List<Cart>;
+@model List<Cart>
+
 @{
-    ViewData["Title"] = "Products";
+    ViewData["Title"] = "View Cart";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">Cart</h2>
-    <div class="row">
-        @if (Model == null || !Model.Any())
-        {
-            <h2 class="mb-4 text-center">Cart is Empty</h2>
-        }else
-        {
-            @foreach (var cart in Model)
-            {
-           
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary">Cart id : @cart.Id</h5>
-                            <p class="card-body text-primary">Customer id : @cart.CustomerId</p>
-                            <p class="card-body text-primary">Product id : @cart.ProductId</p>
-                            <form method="post" action="/Customer/RemoveFromCart">
-                                <input type="hidden" name="cartId" value="@cart.Id" />
-                                <button type="submit" class="btn btn-outline-primary btn-sm">Remove from cart</button>
-                            </form>
-                            @* <p class="card-body text-primary">@product.</p> *@
-                        </div>
-                    </div>
-                </div>
-            
-            
+    <h2 class="mb-4 text-center">Your Cart</h2>
+
+    @if (!Model.Any())
+    {
+        <h4 class="text-center">Your cart is empty!</h4>
+    }
+    else
+    {
+        <form method="post" action="/Customer/PlaceOrder">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model[i].Product.Name</td>
+                            <td>@Model[i].Product.Price.ToString("C")</td>
+                            <td>
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(@i,@Model[i].Product.Quantity)">-</button>
+                                    <input type="number"
+                                           id="quantity-@i"
+                                           name="CartItems[@i].Quantity"
+                                           value="@Model[i].Quantity"
+                                           min="1"
+                                           class="form-control text-center"
+                                           style="max-width: 70px;"
+                                           readonly />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@i,@Model[i].Product.Quantity)">+</button>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text"
+                                       id="totalPrice-@i"
+                                       name="CartItems[@i].TotalPrice"
+                                       value="@(Model[i].Product.Price * Model[i].Quantity).ToString("0.00 ")"
+                                       class="form-control text-center"
+                                       style="max-width: 100px;"
+                                       readonly
+                                       data-unit-price="@Model[i].Product.Price" />
+                            </td>
+                            <td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeFromCart(@Model[i].ProductId)">
+                                    Remove
+                                </button>
+                            </td>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="text-end">
+                <h4 id="grandTotal">Grand Total: @Model.Sum(c => c.Product.Price * c.Quantity).ToString("C")</h4>
+                <button type="submit" class="btn btn-success mt-3">Checkout</button>
+            </div>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <script>
+
+        function incrementQuantity(index, maxQuantity) {
+            var quantityInput = document.getElementById("quantity-" + index);
+            var totalPriceInput = document.getElementById("totalPrice-" + index);
+            var currentQuantity = parseInt(quantityInput.value);
+
+            if (currentQuantity < maxQuantity) {
+                currentQuantity++;
+                quantityInput.value = currentQuantity;
+
+                var unitPrice = parseFloat(totalPriceInput.getAttribute("data-unit-price"));
+                totalPriceInput.value = (unitPrice * currentQuantity).toFixed(2);
+
+                updateGrandTotal();
             }
-       }
+        }
+
+        function decrementQuantity(index, maxQuantity) {
+            var quantityInput = document.getElementById("quantity-" + index);
+            var totalPriceInput = document.getElementById("totalPrice-" + index);
+            var currentQuantity = parseInt(quantityInput.value);
+
+            if (currentQuantity > 1) {
+                currentQuantity--;
+                quantityInput.value = currentQuantity;
+
+                var unitPrice = parseFloat(totalPriceInput.getAttribute("data-unit-price"));
+                totalPriceInput.value = (unitPrice * currentQuantity).toFixed(2);
+
+                updateGrandTotal();
+            }
+        }
+
+        function updateGrandTotal() {
+            var total = 0;
+            var totalPriceInputs = document.querySelectorAll('input[id^="totalPrice-"]');
+            totalPriceInputs.forEach(function(input) {
+                total += parseFloat(input.value);
+            });
+
+            document.getElementById('grandTotal').innerText = "Grand Total: $" + total.toFixed(2);
+        }
+            function removeFromCart(productId) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Customer/RemoveFromCart';
+
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'productId';
+            input.value = productId;
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+    
+
+    </script>
+}

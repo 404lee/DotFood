@@ -65,28 +65,30 @@ namespace DotFood.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddItem(ProductViewModel2 model)
         {
-            //if(model.ImageFile == null || model.ImageFile.Length == 0) 
-            //{
-            //    ModelState.AddModelError("ImageFile", "Please upload an Image");
-            //    model.Categories = await _context.Category.ToListAsync();
-            //    return View(model);
-            //}
-
+            
             var wwwroot = _environment.WebRootPath + "/Images/";
 
-            //if (!Directory.Exists(wwwroot))
-            //{
-            //    Directory.CreateDirectory(wwwroot);
-            //}
+            var extension = Path.GetExtension(model.ImageFile.FileName).ToLowerInvariant();
+
+            
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" ,".jfif"};
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                ModelState.AddModelError("ImageFile", "Only image files (.jpg, .jpeg, .png, .gif, .jfif) are allowed.");
+            }
 
             Guid guid = Guid.NewGuid();
 
             string fullPath = System.IO.Path.Combine(wwwroot, guid + model.ImageFile.FileName);
 
-            //using (var fileStream = new FileStream(fullPath, FileMode.Create))
-            //{
-            //    model.ImageFile.CopyTo(fileStream);
-            //}
+            if (allowedExtensions.Contains(extension))
+            {
+                using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                {
+                    model.ImageFile.CopyTo(fileStream);
+                }
+            }
 
             model.imageName = guid + model.ImageFile.FileName;
 

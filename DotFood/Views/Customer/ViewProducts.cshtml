@@ -1,5 +1,5 @@
 ﻿@using DotFood.Entity
-@model List<Product>;
+@model List<Product>
 @{
     ViewData["Title"] = "Products";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,15 +17,51 @@
                     <div class="card-body">
                         <img src="/Images/@product.imageName" width="100" height="100"/>
                         <h5 class="card-title text-primary">@product.Name</h5>
-                        <p class="card-body text-primary">@product.Description</p>
-                        <p class="card-body text-primary">@product.Price</p>
+                        <p class="card-text text-primary">@product.Description</p>
+                        <p class="card-text text-primary">@product.Price</p>
+                        <div class="input-group mb-3 justify-content-center">
+                                <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(@product.Id,@product.Quantity)">-</button>
+                                <input type="number" id="quantity-@product.Id" name="quantity" value="1" min="1" class="form-control text-center" style="width: 70px;" readonly />
+                                <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@product.Id,@product.Quantity)">+</button>
+                        </div>
                     </div>
                     <div class="card-footer bg-transparent border-0 text-end">
-                        <form method="post" action="/Customer/AddToCart">
+                        <form method="post" action="/Customer/AddToCart" id="form-@product.Id">
                             <input type="hidden" name="productId" value="@product.Id" />
-                            <button type="submit" class="btn btn-outline-primary btn-sm">Add to cart</button>
+                            <input type="hidden" id="hidden-quantity-@product.Id" name="quantity" value="1" />
+                            <input type="hidden" id="hidden-totalPrice-@product.Id" name="totalPrice" value="@product.Price" />
+                            <button type="submit" class="btn btn-outline-primary btn-sm" onclick="prepareForm(@product.Id, @product.Price)">Add to cart</button>
                         </form>
+
                     </div>
                 </div>
             </div>
+}
+<script>
+        function incrementQuantity(productId,quantity) {
+                var quantityInput = document.getElementById("quantity-" + productId);
+                var currentValue = parseInt(quantityInput.value);
+                if(currentValue < quantity)
+                {
+                    quantityInput.value = currentValue + 1;
+                }
+               
         }
+        function decrementQuantity(productId,quantity) {
+                var quantityInput = document.getElementById("quantity-" + productId);
+                var currentValue = parseInt(quantityInput.value);
+                if (currentValue > 0 && currentValue <= quantity) {
+                    quantityInput.value = currentValue - 1;
+                }
+        }
+        function prepareForm(productId, price) 
+        {
+                var quantityInput = document.getElementById("quantity-" + productId);
+                var hiddenQuantity = document.getElementById("hidden-quantity-" + productId);
+                var hiddenTotalPrice = document.getElementById("hidden-totalPrice-" + productId);
+
+                var quantity = parseInt(quantityInput.value);
+                hiddenQuantity.value = quantity;
+                hiddenTotalPrice.value = (price * quantity).toFixed(2); // Set the total price
+        }
+</script>
