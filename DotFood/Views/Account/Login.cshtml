@@ -1,5 +1,7 @@
 ﻿@using DotFood.ViewModel
 @model LoginViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 
 @{
     ViewData["Title"] = "Login";
@@ -9,11 +11,12 @@
 <div>
     <div class="account-box">
         <h2 class="text-center mb-4">Login</h2>
-        <form asp-action="Login" method="post">
+        <form asp-action="Login" method="post" >
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
+                <input asp-for="Email" class="form-control" type="email"/>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -28,7 +31,7 @@
                 </label>
             </div>
             <input type="submit" value="Login" class="btn btn-success w-100 p-2" />
-            <p class="text-center mt-2">
+            <p class="text-center mt-2">    
                 Don't have an account?
                 <a asp-controller="Account" asp-action="Register" class="text-decoration-none">Register</a>
             </p>

@@ -38,6 +38,7 @@ namespace DotFood.Entity
         public DateTime? UpdatedAt { get; set; }
         public bool IsAvailable { get; set; } = true;
 
+        public string imageName { get; set; }
 
     }
 }

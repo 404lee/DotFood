@@ -22,4 +22,4 @@ namespace DotFood.Entity
         [StringLength(10, ErrorMessage = "city cannot exceed 10 characters")]
         public string? City { get; set; }
     }
-}
+    }

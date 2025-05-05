@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using DotFood.Data;
 using DotFood.ViewModels;
 using DotFood.Entity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using DotFood.Helpers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace DotFood
 {
@@ -11,6 +16,53 @@ namespace DotFood
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+   
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
+
+      
+                builder.Services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddCookie(options =>
+                {
+                  options.LoginPath = "/Account/Login";
+                     options.AccessDeniedPath = "/Account/AccessDenied";
+                    })
+
+
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings["Audience"],
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                // Required for cookie auth fallback
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["jwt"];
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            builder.Services.AddAuthorization();
 
             builder.Services.AddControllersWithViews();
 
@@ -31,6 +83,7 @@ namespace DotFood
             })
             .AddEntityFrameworkStores<UsersContext>()
             .AddDefaultTokenProviders();
+            builder.Services.AddSingleton<JwtHelper>();
 
             var app = builder.Build();
 
@@ -64,6 +117,10 @@ namespace DotFood
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseMiddleware<JwtCookieAuthenticationMiddleware>();
+
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseStatusCodePagesWithReExecute("/Home/Error");

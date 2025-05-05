@@ -15,5 +15,9 @@ namespace DotFood.Entity
         [ForeignKey("ProductId")]
         public long ProductId { get; set; }
         public Product Product { get; set; }
+        [Required]
+        public int Quantity { get; set; }
+        [Required]
+        public double TotalPrice { get; set; }
     }
 }
