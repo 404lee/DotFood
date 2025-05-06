@@ -1,7 +1,69 @@
-﻿@{
-    ViewData["Title"] = "Customer Page";
+﻿@model DotFood.ViewModel.ProductViewModel2
+
+@{
+    ViewData["Title"] = "Edit Product";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Edit Item</h1>
+<h2>Edit Product</h2>
+
+<form asp-action="EditItem" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId">Category</label>
+        <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name", Model.CategoryId))">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Quantity"></label>
+        <input asp-for="Quantity" class="form-control" type="number" min="0" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Existing Image</label>
+        <br />
+        @if (!string.IsNullOrEmpty(Model.imageName))
+        {
+            <img src="@Url.Content("~/Images/" + Model.imageName)" alt="Existing Image" style="max-width: 200px; margin-bottom: 10px;" />
+        }
+        else
+        {
+            <p>No existing image found.</p>
+        }
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ImageFile">Upload New Product Image</label>
+        <br />
+        <input asp-for="ImageFile" class="form-control-file" type="file" accept="image/*" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+<br/>
+<div class="form-group">
+    <a href="@Url.Action("ViewStore")" class="btn btn-secondary">Back to Store</a>
 </div>
+

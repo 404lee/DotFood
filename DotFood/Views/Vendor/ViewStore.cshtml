@@ -9,7 +9,7 @@
     <div class="mb-4">
         <h2 class="text-center mb-4">My Store Status</h2>
         <form asp-action="ToggleStoreStatus" asp-controller="Vendor" method="post" class="text-center">
-            <button type="submit" class="btn @(isOpen ? "btn-success" : "btn-secondary")">
+            <button type="submit" class="btn @(isOpen ? "btn-success" : "btn-danger")">
                 Store is @(isOpen ? "Open" : "Closed") – Click to Change
             </button>
         </form>

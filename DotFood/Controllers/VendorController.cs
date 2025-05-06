@@ -54,19 +54,6 @@ namespace DotFood.Controllers
             return View(products);
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> AddItem()
-        {
-            var categories = await _context.Category.ToListAsync();
-
-            var model = new ProductViewModel2
-            {
-                Categories = categories
-            };
-            return View(model);
-        }
-
         [HttpGet]
         public async Task<IActionResult> EditItem(int id)
         {
@@ -79,7 +66,7 @@ namespace DotFood.Controllers
 
             var categories = await _context.Category.ToListAsync();
 
-            var model = new ProductViewModel
+            var model = new ProductViewModel2
             {
                 Id = (int)product.Id,
                 Name = product.Name,
@@ -87,7 +74,8 @@ namespace DotFood.Controllers
                 Price = product.Price,
                 Quantity = product.Quantity,
                 CategoryId = product.CategoryId,
-                Categories = categories
+                Categories = categories,
+                imageName = product.imageName
             };
 
             return View(model);
@@ -95,7 +83,7 @@ namespace DotFood.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditItem(ProductViewModel model)
+        public async Task<IActionResult> EditItem(ProductViewModel2 model)
         {
             if (!ModelState.IsValid)
             {
@@ -116,35 +104,60 @@ namespace DotFood.Controllers
             product.Quantity = model.Quantity;
             product.CategoryId = model.CategoryId;
 
-            await _context.SaveChangesAsync();
+            if (model.ImageFile != null && model.ImageFile.Length > 0)
+            {
+                var wwwroot = _environment.WebRootPath + "/Images/";
+                var extension = Path.GetExtension(model.ImageFile.FileName).ToLowerInvariant();
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
 
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError("ImageFile", "Only image files (.jpg, .jpeg, .png, .gif, .jfif) are allowed.");
+                    model.Categories = await _context.Category.ToListAsync();
+                    return View(model);
+                }
+
+                var guid = Guid.NewGuid();
+                string fullPath = Path.Combine(wwwroot, guid + model.ImageFile.FileName);
+
+                // Delete existing image if a new one is uploaded
+                if (!string.IsNullOrEmpty(product.imageName))
+                {
+                    var existingImagePath = Path.Combine(wwwroot, product.imageName);
+                    if (System.IO.File.Exists(existingImagePath))
+                    {
+                        System.IO.File.Delete(existingImagePath);
+                    }
+                }
+                using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                {
+                    model.ImageFile.CopyTo(fileStream);
+                }
+
+                product.imageName = guid + model.ImageFile.FileName;
+            }
+
+            await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Product updated successfully!";
             return RedirectToAction("ViewStore");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteItem(int id)
+        [HttpGet]
+        public async Task<IActionResult> AddItem()
         {
-            var vendor = await _userManager.GetUserAsync(User);
-            var product = await _context.Products
-                .FirstOrDefaultAsync(p => p.Id == id && p.VendorId == vendor.Id);
+            var categories = await _context.Category.ToListAsync();
 
-            if (product == null)
-                return NotFound();
-
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "Product deleted successfully!";
-            return RedirectToAction("ViewStore");
+            var model = new ProductViewModel2
+            {
+                Categories = categories
+            };
+            return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddItem(ProductViewModel2 model)
         {
-            
+
             var wwwroot = _environment.WebRootPath + "/Images/";
 
             if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -173,7 +186,7 @@ namespace DotFood.Controllers
 
                 model.imageName = guid + model.ImageFile.FileName;
             }
-            else 
+            else
             {
                 model.imageName = "";
             }
@@ -210,6 +223,26 @@ namespace DotFood.Controllers
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Item added successfully!";
             return RedirectToAction("Index", "Vendor");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteItem(int id)
+        {
+            var vendor = await _userManager.GetUserAsync(User);
+            var product = await _context.Products
+                .FirstOrDefaultAsync(p => p.Id == id && p.VendorId == vendor.Id );
+            if (product == null)
+                return NotFound();
+
+            var cart = _context.Cart.Where(c => c.ProductId == id);
+            _context.Cart.RemoveRange(cart);
+
+            _context.Products.Remove(product);
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Product deleted successfully!";
+            return RedirectToAction("ViewStore");
         }
 
         [HttpPost]
