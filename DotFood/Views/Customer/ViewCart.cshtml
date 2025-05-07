@@ -36,40 +36,38 @@
                             <td>@Model[i].Product.Price.ToString("C")</td>
                             <td>
                                 <div class="input-group">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(@i,@Model[i].Product.Quantity)">-</button>
+                                    <input type="hidden" name="CartItems[@i].ProductId" value="@Model[i].ProductId" />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(@i, @Model[i].Product.Quantity)">-</button>
                                     <input type="number"
                                            id="quantity-@i"
                                            name="CartItems[@i].Quantity"
                                            value="@Model[i].Quantity"
                                            min="1"
+                                           max="@Model[i].Product.Quantity"
                                            class="form-control text-center"
-                                           style="max-width: 70px;"
-                                           readonly />
-                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@i,@Model[i].Product.Quantity)">+</button>
+                                           style="max-width: 70px;" />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@i, @Model[i].Product.Quantity)">+</button>
                                 </div>
                             </td>
                             <td>
                                 <input type="text"
                                        id="totalPrice-@i"
-                                       name="CartItems[@i].TotalPrice"
-                                       value="@(Model[i].Product.Price * Model[i].Quantity).ToString("0.00 ")"
+                                       value="@($"{Model[i].Product.Price * Model[i].Quantity:0.00}")"
                                        class="form-control text-center"
                                        style="max-width: 100px;"
                                        readonly
                                        data-unit-price="@Model[i].Product.Price" />
                             </td>
                             <td>
-                            <td>
                                 <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeFromCart(@Model[i].ProductId)">
                                     Remove
                                 </button>
-                            </td>
-
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
+
             <div class="text-end">
                 <h4 id="grandTotal">Grand Total: @Model.Sum(c => c.Product.Price * c.Quantity).ToString("C")</h4>
                 <button type="submit" class="btn btn-success mt-3">Checkout</button>
@@ -122,7 +120,8 @@
 
             document.getElementById('grandTotal').innerText = "Grand Total: $" + total.toFixed(2);
         }
-            function removeFromCart(productId) {
+
+        function removeFromCart(productId) {
             var form = document.createElement('form');
             form.method = 'POST';
             form.action = '/Customer/RemoveFromCart';
@@ -136,8 +135,6 @@
             document.body.appendChild(form);
             form.submit();
         }
-
-    
 
     </script>
 }

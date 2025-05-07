@@ -165,7 +165,6 @@ namespace DotFood.Controllers
                 var extension = Path.GetExtension(model.ImageFile.FileName).ToLowerInvariant();
 
 
-
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
 
                 if (!allowedExtensions.Contains(extension))

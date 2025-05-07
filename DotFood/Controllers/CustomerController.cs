@@ -29,13 +29,17 @@ namespace DotFood.Controllers
 
         public async Task<IActionResult> Index()
         {
+<<<<<<< HEAD
+=======
+            
+>>>>>>> f98fbf23791e847a53e8f7c8e467460b342f0597
             var vendors = await _userManager.GetUsersInRoleAsync("vendor");
 
             return View(vendors);
         }
 
         [HttpGet]
-        public async Task<IActionResult> ViewItems(string Id) 
+        public async Task<IActionResult> ViewCategories(string Id) 
         {
             var categories = await _context.Category.ToListAsync();
 
@@ -97,7 +101,7 @@ namespace DotFood.Controllers
             var product = await _context.Products
                 .FirstOrDefaultAsync(p => p.Id == productId);
 
-            var ProductVendorId = product.VendorId;
+            var ProductVendorId = product?.VendorId;
 
 
             if (product == null)
@@ -132,7 +136,7 @@ namespace DotFood.Controllers
                     await _context.SaveChangesAsync();
                 }
             } 
-            else if (product.VendorId == cartItemm.Product.VendorId)
+            else if (product.VendorId == cartItemm?.Product.VendorId)
             {
                 var existingCartItem = await _context.Cart
                .FirstOrDefaultAsync(c => c.CustomerId == customer.Id && c.ProductId == product.Id);
@@ -160,7 +164,8 @@ namespace DotFood.Controllers
                 }
 
             }
-            return RedirectToAction("ViewCart");
+            return RedirectToAction("ViewProducts",
+                        new { vendorId = ProductVendorId, categoryId = product.CategoryId });
         }
 
         [HttpPost]
@@ -199,7 +204,7 @@ namespace DotFood.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PlaceOrder()
+        public async Task<IActionResult> PlaceOrder(List<Cart>cartItems)
         {
             var userId = User.Identity.Name;
             var customer = await _context.Users
@@ -210,23 +215,37 @@ namespace DotFood.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var cartItems = await _context.Cart
-                .Where(c => c.CustomerId == customer.Id)
-                .Include(c => c.Product)
-                .ToListAsync();
+            if (cartItems == null || !cartItems.Any())
+            {
+                return RedirectToAction("ViewCart");
+            }
+            
+            decimal totalPrice = 0;
+            var productForVendor = await _context.Products.FindAsync(cartItems.First().ProductId);
 
-            if (!cartItems.Any())
+            if (productForVendor == null)
             {
                 return RedirectToAction("ViewCart");
             }
 
+            foreach (var item in cartItems)
+            {
+                var product = await _context.Products.FindAsync(item.ProductId);
+
+                if (product == null || item.Quantity > product.Quantity || item.Quantity < 1)
+                {   
+                    return RedirectToAction("ViewCart");
+                }
+
+                totalPrice += product.Price * item.Quantity;
+            }
             
             var order = new Order
             {
                  CustomerId = customer.Id,
-                 VendorId = cartItems.First().Product.VendorId,
+                 VendorId = productForVendor.VendorId,
                  OrderDate = DateTime.Now,
-                 TotalPrice = (decimal)(cartItems.Sum(c => c.TotalPrice) + 3.0),
+                 TotalPrice = totalPrice + 3.0m,
                  PaymentMethod = "Cash",
                  DeliveryFee = 3.0m
             };
@@ -234,22 +253,47 @@ namespace DotFood.Controllers
              _context.Orders.Add(order);
              await _context.SaveChangesAsync();
 
+             
              foreach (var cartItem in cartItems)
              {
-                 var orderDetails = new OrderDetails
-                 {
-                     OrderId = order.Id,    
-                     ProductId = cartItem.ProductId,
-                     Id = cartItem.Id,
-                     Quantity = 1,
-                     Price = cartItem.Product.Price
-                 };
 
-                 _context.OrderDetails.Add(orderDetails);
+                var product = await _context.Products.FindAsync(cartItem.ProductId);
+
+                var orderDetails = new OrderDetails
+                {
+                     OrderId = order.Id,    
+                     ProductId = product.Id,
+                     Quantity = cartItem.Quantity,
+                     Price = product.Price
+                };
+
+                _context.OrderDetails.Add(orderDetails);
+
+                product.Quantity -= cartItem.Quantity;
+
              }
 
+<<<<<<< HEAD
              _context.Cart.RemoveRange(cartItems);
              await _context.SaveChangesAsync();
+=======
+            await _context.SaveChangesAsync();
+
+            var orderStatus = new OrderStatus
+             {
+                OrderId = order.Id,
+                Status = OrderState.Approved,
+             };
+                
+            _context.OrderStatus.Add(orderStatus);
+            await _context.SaveChangesAsync();
+
+            var cartItemsToDelete = await _context.Cart.Where(c => c.CustomerId == customer.Id).ToListAsync();
+
+            _context.Cart.RemoveRange(cartItemsToDelete);
+            await _context.SaveChangesAsync();
+
+>>>>>>> f98fbf23791e847a53e8f7c8e467460b342f0597
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
         }
 
@@ -257,6 +301,7 @@ namespace DotFood.Controllers
         public async Task<IActionResult> OrderConfirmation(long orderId)
         {
             var order = await _context.Orders
+                .Include(o => o.OrderStatus)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
@@ -267,6 +312,7 @@ namespace DotFood.Controllers
             }
 
             return View(order);
+
         }
     }
 }

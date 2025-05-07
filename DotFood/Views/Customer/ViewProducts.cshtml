@@ -10,9 +10,11 @@
 
 <div class="container mt-5">
     <h2 class="mb-4 text-center">Products</h2>
+    <h5 style="color:red;text-align:center">@ViewBag.VendorError</h5>
     <div class="row">
         @foreach (var product in Model)
         {
+<<<<<<< HEAD
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
@@ -25,19 +27,63 @@
                             <input type="number" id="quantity-@product.Id" name="quantity" value="1" min="1" class="form-control text-center" style="width: 70px;" readonly />
                             <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@product.Id,@product.Quantity)">+</button>
                             @ViewBag.VendorError
+=======
+            @if (product.Quantity != 0)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            @if(product.imageName != "")
+                            {
+                                <img src="/Images/@product.imageName" width="100" height="100"/>
+                            }
+                            <h5 class="card-title text-primary">@product.Name</h5>
+                            <p class="card-text text-primary">@product.Description</p>
+                            <p class="card-text text-primary">@product.Price</p>
+                            <div class="input-group mb-3 justify-content-center">
+                                <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(@product.Id,@product.Quantity)">-</button>
+                                <input type="number" id="quantity-@product.Id" name="quantity" value="1" min="1" class="form-control text-center" style="width: 70px;" readonly />
+                                <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@product.Id,@product.Quantity)">+</button>
+                            </div>
+                            @if (product.imageName == "")
+                            {
+                                <form method="post" action="/Customer/AddToCart" id="form-@product.Id">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="hidden" id="hidden-quantity-@product.Id" name="quantity" value="1" />
+                                    <input type="hidden" id="hidden-totalPrice-@product.Id" name="totalPrice" value="@product.Price" />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm" onclick="prepareForm(@product.Id, @product.Price)">Add to cart</button>
+                                </form>
+                            }
+>>>>>>> f98fbf23791e847a53e8f7c8e467460b342f0597
                         </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 text-end">
-                        <form method="post" action="/Customer/AddToCart" id="form-@product.Id">
-                            <input type="hidden" name="productId" value="@product.Id" />
-                            <input type="hidden" id="hidden-quantity-@product.Id" name="quantity" value="1" />
-                            <input type="hidden" id="hidden-totalPrice-@product.Id" name="totalPrice" value="@product.Price" />
-                            <button type="submit" class="btn btn-outline-primary btn-sm" onclick="prepareForm(@product.Id, @product.Price)">Add to cart</button>
-                        </form>
-
+                            @if (product.imageName != "")
+                            {
+                                <div class="card-footer bg-transparent border-0 text-end">
+                                <form method="post" action="/Customer/AddToCart" id="form-@product.Id">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="hidden" id="hidden-quantity-@product.Id" name="quantity" value="1" />
+                                    <input type="hidden" id="hidden-totalPrice-@product.Id" name="totalPrice" value="@product.Price" />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm" onclick="prepareForm(@product.Id, @product.Price)">Add to cart</button>
+                                </form>
+                                </div>   
+                            }
                     </div>
                 </div>
+<<<<<<< HEAD
             </div>
+=======
+                }
+        }     
+<script>
+        function incrementQuantity(productId,quantity) {
+                var quantityInput = document.getElementById("quantity-" + productId);
+                var currentValue = parseInt(quantityInput.value);
+                if(currentValue < quantity)
+                {
+                    quantityInput.value = currentValue + 1;
+                }
+               
+>>>>>>> f98fbf23791e847a53e8f7c8e467460b342f0597
         }
         <script>
             function incrementQuantity(productId,quantity) {
