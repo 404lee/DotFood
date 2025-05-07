@@ -70,7 +70,9 @@
 
             <div class="text-end">
                 <h4 id="grandTotal">Grand Total: @Model.Sum(c => c.Product.Price * c.Quantity).ToString("C")</h4>
-                <button type="submit" class="btn btn-success mt-3">Checkout</button>
+                <form asp-action="OrderConfirmation" asp-route-id="@Model.FirstOrDefault()?.Id" method="post">
+                    <button type="submit" class="btn btn-sm btn-success">CheckOut</button>
+                </form>
             </div>
         </form>
     }

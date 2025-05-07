@@ -29,7 +29,7 @@ namespace DotFood.Controllers
 
         public async Task<IActionResult> Analytics()
         {
-            var model = new UserManagementViewModel
+            var model = new VendorAnalyticsViewModel
             {
                 TotalRevenue = await _context.Orders.SumAsync(o => o.TotalPrice),
                 TotalVendors = (await _userManager.GetUsersInRoleAsync("vendor")).Count, 
@@ -41,18 +41,130 @@ namespace DotFood.Controllers
         public async Task<IActionResult> ManageUsers()
         {
             var users = await _userManager.Users.ToListAsync();
-            return View(users);
+
+            var usersWithRoles = new List<UserWithRolesViewModel>();
+
+            foreach (var user in users)
+            {
+                var roles = (await _userManager.GetRolesAsync(user)).ToList();
+                usersWithRoles.Add(new UserWithRolesViewModel
+                {
+                    User = user,
+                    Roles = roles
+                });
+            }
+
+            var viewModel = new ManageUsersViewModel
+            {
+                UsersWithRoles = usersWithRoles
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-                return NotFound();
+            var roles = await _userManager.GetRolesAsync(user);
 
-            await _userManager.DeleteAsync(user);
-            return RedirectToAction(nameof(ManageUsers));
+            if (roles.Contains("vendor"))
+            {
+                var vendorOrders = await _context.Orders.Where(o => o.VendorId == id).ToListAsync();
+                foreach (var order in vendorOrders)
+                {
+                    var orderItems = await _context.OrderDetails.Where(oi => oi.OrderId == order.Id).ToListAsync();
+                    _context.OrderDetails.RemoveRange(orderItems);
+                    _context.Orders.Remove(order);
+                }
+                var products = await _context.Products.Where(p => p.VendorId == id).ToListAsync();
+                foreach (var product in products)
+                {
+                    var cartItems = await _context.Cart.Where(c => c.ProductId == product.Id).ToListAsync();
+                    _context.Cart.RemoveRange(cartItems);
+
+                    var productOrderDetails = await _context.OrderDetails.Where(od => od.ProductId == product.Id).ToListAsync();
+                    _context.OrderDetails.RemoveRange(productOrderDetails);
+                    _context.Products.Remove(product);
+                }
+            }
+            else if (roles.Contains("customer"))
+            {
+                var customerOrders = await _context.Orders.Where(o => o.CustomerId == id).ToListAsync();
+                foreach (var order in customerOrders)
+                {
+                    var orderItems = await _context.OrderDetails.Where(oi => oi.OrderId == order.Id).ToListAsync();
+                    _context.OrderDetails.RemoveRange(orderItems);
+                    _context.Orders.Remove(order);
+                }
+            }
+            await _context.SaveChangesAsync();
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "User deleted successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "There was an error deleting the user.";
+            }
+            return RedirectToAction("ManageUsers");
+        }
+
+        public async Task<IActionResult> ViewHistory()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var userHistory = new List<UserHistory>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                if (roles.Contains("vendor"))
+                {
+                    var vendorOrders = await _context.Orders
+                        .Where(o => o.VendorId == user.Id)
+                        .Select(o => new OrderHistory
+                        {
+                            OrderId = o.Id,
+                            CustomerName = o.Customer.FullName,
+                            OrderDate = o.OrderDate,
+                            TotalPrice = o.TotalPrice
+                        })
+                        .ToListAsync();
+
+                    userHistory.Add(new UserHistory
+                    {
+                        UserId = user.Id,
+                        FullName = user.FullName,
+                        Role = "Vendor",
+                        Orders = vendorOrders
+                    });
+                }
+                else if (roles.Contains("customer"))
+                {
+                    var customerOrders = await _context.Orders
+                        .Where(o => o.CustomerId == user.Id)
+                        .Select(o => new OrderHistory
+                        {
+                            OrderId = o.Id,
+                            VendorName = o.Vendor.FullName,
+                            OrderDate = o.OrderDate,
+                            TotalPrice = o.TotalPrice
+                        })
+                        .ToListAsync();
+
+                    userHistory.Add(new UserHistory
+                    {
+                        UserId = user.Id,
+                        FullName = user.FullName,
+                        Role = "Customer",
+                        Orders = customerOrders
+                    });
+                }
+            }
+            return View(userHistory);
         }
 
     }

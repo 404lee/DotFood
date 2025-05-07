@@ -231,9 +231,11 @@ namespace DotFood.Controllers
         {
             var vendor = await _userManager.GetUserAsync(User);
             var product = await _context.Products
-                .FirstOrDefaultAsync(p => p.Id == id && p.VendorId == vendor.Id );
+                .FirstOrDefaultAsync(p => p.Id == id && p.VendorId == vendor.Id);
             if (product == null)
                 return NotFound();
+            var orderDetails = _context.OrderDetails.Where(od => od.ProductId == id);
+            _context.OrderDetails.RemoveRange(orderDetails);
 
             var cart = _context.Cart.Where(c => c.ProductId == id);
             _context.Cart.RemoveRange(cart);

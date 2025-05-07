@@ -1,0 +1,72 @@
+﻿@using DotFood.Entity  
+
+@model List<UserHistory>  
+
+@{  
+  ViewData["Title"] = "View History";  
+  Layout = "~/Views/Shared/_Layout.cshtml";  
+}  
+
+<div class="container mt-4">  
+  <h2 class="text-center mb-4">View History</h2>   
+
+  @if (Model.Any(u => u.Role == "Customer"))  
+  {  
+      <h3 class="mt-4">Customer</h3>  
+      <table class="table table-bordered table-striped">  
+          <thead class="thead-dark">  
+              <tr>  
+                  <th>Order Number</th>  
+                  <th>Date of Order Placed</th>  
+                  <th>Order Price</th>  
+              </tr>  
+          </thead>  
+          <tbody>  
+              @foreach (var user in Model.Where(u => u.Role == "Customer"))  
+              {  
+                  if (user.Orders is IEnumerable<Order> orders)  
+                  {  
+                      foreach (var order in orders)  
+                      {  
+                          <tr>  
+                              <td>@order.Id</td>  
+                              <td>@order.OrderDate.ToString("MM/dd/yyyy")</td>  
+                              <td>@order.TotalPrice.ToString("C")</td>  
+                          </tr>  
+                      }  
+                  }  
+              }  
+          </tbody>  
+      </table>  
+  }  
+
+  @if (Model.Any(u => u.Role == "Vendor"))  
+  {  
+      <h3 class="mt-4">Vendor</h3>  
+      <table class="table table-bordered table-striped">  
+          <thead class="thead-dark">  
+              <tr>  
+                  <th>Order Number</th>  
+                  <th>Date of Order Placed</th>  
+                  <th>Total Sales Per Order</th>  
+              </tr>  
+          </thead>  
+          <tbody>  
+              @foreach (var user in Model.Where(u => u.Role == "Vendor"))  
+              {  
+                  if (user.Orders is IEnumerable<Order> orders)  
+                  {  
+                      foreach (var order in orders)  
+                      {  
+                          <tr>  
+                              <td>@order.Id</td>  
+                              <td>@order.OrderDate.ToString("MM/dd/yyyy")</td>  
+                              <td>@order.TotalPrice.ToString("C")</td>  
+                          </tr>  
+                      }  
+                  }  
+              }  
+          </tbody>  
+      </table>  
+  }  
+</div>

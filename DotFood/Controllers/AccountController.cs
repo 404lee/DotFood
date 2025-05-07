@@ -43,50 +43,6 @@ namespace DotFood.Controllers
             return View();
         }
 
-        /*   [HttpPost]
-           [ValidateAntiForgeryToken]
-           public async Task<IActionResult> Register(RegisterViewModel model)
-           {
-               if (ModelState.IsValid)
-               {
-                   var user = new Users
-                   {
-                       UserName = model.Email,
-                       Email = model.Email,
-                       FullName = model.FullName,
-                       Country = model.Country,
-                       City = model.City
-                   };
-                   var result = await _userManager.CreateAsync(user, model.Password);
-                   if (result.Succeeded)
-                   {
-                       if (!await _roleManager.RoleExistsAsync(model.Role))
-                       {
-                           await _roleManager.CreateAsync(new IdentityRole(model.Role));
-                       }
-
-                       await _userManager.AddToRoleAsync(user, model.Role);
-
-                       var token = _jwtHelper.GenerateToken(user.Id, user.Email, model.Role);
-
-                       Response.Cookies.Append("JwtToken", token, new CookieOptions
-                       {
-                           HttpOnly = true,
-                           Secure = true,
-                           SameSite = SameSiteMode.Strict,
-                           Expires = DateTime.UtcNow.AddMinutes(60)
-                       });
-
-                       // Redirect based on role
-                       return RedirectToDashboard(model.Role);
-                   }
-                   foreach (var error in result.Errors)
-                   {
-                       ModelState.AddModelError("", error.Description);
-                   }
-               }
-               return View(model);
-           }*/
         [HttpPost]
     //    [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -128,7 +84,6 @@ namespace DotFood.Controllers
             return View(model);
         }
 
-
         [HttpGet]
         public IActionResult Login()
         {
@@ -164,8 +119,6 @@ namespace DotFood.Controllers
                     var identity = new ClaimsIdentity(jwtToken.Claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var principal = new ClaimsPrincipal(identity);
 
-              //      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
                     return RedirectToDashboard(role);
                 }
 
@@ -186,7 +139,6 @@ namespace DotFood.Controllers
                 _ => RedirectToAction("Index", "Home")
             };
         }
-
 
         [HttpGet]
         [Authorize]
