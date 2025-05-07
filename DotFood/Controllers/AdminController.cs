@@ -38,27 +38,22 @@ namespace DotFood.Controllers
             return View(model);
         }
 
-        //[HttpPost]
-        //[Authorize(Roles = "vendor,admin")]
-        //public async Task<IActionResult> UpdateOrderStatus(long orderId, string status)
-        //{
-        //    var order = await _context.Orders.FindAsync(orderId);
+        public async Task<IActionResult> ManageUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return View(users);
+        }
 
-        //    if (order == null)
-        //        return NotFound();
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound();
 
-        //    var newStatus = new OrderStatus
-        //    {
-        //        OrderId = order.Id,
-        //        Status = status,
-        //        StatusDate = DateTime.Now
-        //    };
-
-        //    _context.OrderStatuses.Add(newStatus);
-        //    await _context.SaveChangesAsync();
-
-        //    return RedirectToAction("OrderDetails", new { id = order.Id });
-        //}
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction(nameof(ManageUsers));
+        }
 
     }
 }
