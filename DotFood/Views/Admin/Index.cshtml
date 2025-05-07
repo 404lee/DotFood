@@ -1,7 +1,83 @@
 ﻿@{
-    ViewData["Title"] = "Customer Page";
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Admin</h1>
+<div class="admin-container">
+    <h3 class="admin-title">Admin Dashboard</h3>
+
+    <div class="admin-actions">
+        <div class="button-container">
+            <a asp-action="ManageUsers" class="admin-btn manage-users-btn">
+                Manage Users
+            </a>
+        </div>
+
+        <div class="button-container">
+            <a asp-action="Analytics" class="admin-btn analytics-btn">
+                Analytics
+            </a>
+        </div>
+    </div>
 </div>
+
+<style>
+    .admin-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: #333;
+        font-weight: 300;
+    }
+
+    .admin-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .admin-btn {
+        padding: 12.5px 30px;
+        border: 0;
+        border-radius: 100px;
+        background-color: #FFA000;
+        color: #000000;
+        font-weight: bold;
+        transition: all 0.5s;
+        -webkit-transition: all 0.5s;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        width: 200px;
+        display: inline-block;
+    }
+
+        .admin-btn:hover {
+            background-color: #FFD54F;
+            box-shadow: 0 0 20px #FFD54F50;
+            transform: scale(1.1);
+        }
+
+        .admin-btn:active {
+            background-color: #FFA000;
+            transition: all 0.25s;
+            -webkit-transition: all 0.25s;
+            box-shadow: none;
+            transform: scale(0.98);
+        }
+</style>
