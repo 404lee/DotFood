@@ -1,28 +1,4 @@
-﻿/*using Microsoft.AspNetCore.Mvc;
-using DotFood.Data;
-using DotFood.Entity;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-
-
-namespace DotFood.Controllers
-{
-
-    [Authorize(Roles = "Customer")]
-
-    public class CustomerController : Controller
-    {
-        private readonly UsersContext _context;
-
-        public CustomerController(UsersContext context)
-        {
-            _context = context;
-        }*/
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using DotFood.Data;
 using DotFood.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -53,16 +29,11 @@ namespace DotFood.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var products = await _context.Products
-            //    .Include(p => p.Category)
-            //    .ToListAsync();
-
             var vendors = await _userManager.GetUsersInRoleAsync("vendor");
-
-            
 
             return View(vendors);
         }
+
         [HttpGet]
         public async Task<IActionResult> ViewItems(string Id) 
         {
@@ -75,12 +46,12 @@ namespace DotFood.Controllers
             };
             return View(productViewModel);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> ViewProducts(string vendorId, long categoryId)
         {
             if (TempData["VendorError"] != null)
-            {   
+            {
                 ViewBag.VendorError = TempData["VendorError"].ToString();
             }
             var products = await _context.Products
@@ -133,8 +104,7 @@ namespace DotFood.Controllers
             {
                 return RedirectToAction("Index");
             }
-            
-            
+                     
             var cart = await _context.Cart.FirstOrDefaultAsync(c => c.CustomerId == customer.Id);
 
             var cartItemm = await _context.Cart
@@ -228,7 +198,6 @@ namespace DotFood.Controllers
             return RedirectToAction("ViewCart");
         }
 
-
         [HttpPost]
         public async Task<IActionResult> PlaceOrder()
         {
@@ -281,7 +250,6 @@ namespace DotFood.Controllers
 
              _context.Cart.RemoveRange(cartItems);
              await _context.SaveChangesAsync();
-            //}
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
         }
 

@@ -225,6 +225,7 @@ namespace DotFood.Controllers
             TempData["SuccessMessage"] = "Item added successfully!";
             return RedirectToAction("Index", "Vendor");
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteItem(int id)
