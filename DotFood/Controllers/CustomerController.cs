@@ -29,6 +29,9 @@ namespace DotFood.Controllers
 
         public async Task<IActionResult> Index()
         {
+            //var products = await _context.Products
+            //    .Include(p => p.Category)
+            //    .ToListAsync();
 
             var vendors = await _userManager.GetUsersInRoleAsync("vendor");
 
@@ -201,92 +204,78 @@ namespace DotFood.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PlaceOrder(List<Cart> cartItems)
+        public async Task<IActionResult> PlaceOrder(List<Cart>cartItems)
         {
-            var userId = User.Identity?.Name;
-            if (string.IsNullOrEmpty(userId))
+            var userId = User.Identity.Name;
+            var customer = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserName == userId);
+
+            if (customer == null) // no loged-in user currentlly
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var customer = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId);
-            if (customer == null || cartItems == null || !cartItems.Any())
+            if (cartItems == null || !cartItems.Any())
             {
                 return RedirectToAction("ViewCart");
             }
-
+            
             decimal totalPrice = 0;
-            var firstCartItem = cartItems.FirstOrDefault();
-            if (firstCartItem == null)
-            {
-                return RedirectToAction("ViewCart");
-            }
+            var productForVendor = await _context.Products.FindAsync(cartItems.First().ProductId);
 
-            var productForVendor = await _context.Products.FindAsync(firstCartItem.ProductId);
             if (productForVendor == null)
             {
                 return RedirectToAction("ViewCart");
             }
 
-            var cartItemsFromDb = await _context.Cart.Where(c => c.CustomerId == customer.Id).ToListAsync();
-            if (!cartItemsFromDb.Any())
-            {
-                return RedirectToAction("ViewCart");
-            }
-
-            foreach (var item in cartItemsFromDb)
+            foreach (var item in cartItems)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
+
                 if (product == null || item.Quantity > product.Quantity || item.Quantity < 1)
-                {
+                {   
                     return RedirectToAction("ViewCart");
                 }
 
                 totalPrice += product.Price * item.Quantity;
             }
-
+            
             var order = new Order
             {
-                CustomerId = customer.Id,
-                VendorId = productForVendor.VendorId,
-                OrderDate = DateTime.Now,
-                TotalPrice = totalPrice + 3.0m,
-                PaymentMethod = "Cash",
-                DeliveryFee = 3.0m
+                 CustomerId = customer.Id,
+                 VendorId = productForVendor.VendorId,
+                 OrderDate = DateTime.Now,
+                 TotalPrice = totalPrice + 3.0m,
+                 PaymentMethod = "Cash",
+                 DeliveryFee = 3.0m
             };
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+             _context.Orders.Add(order);
+             await _context.SaveChangesAsync();
 
-            foreach (var cartItem in cartItemsFromDb)
-            {
+             
+             foreach (var cartItem in cartItems)
+             {
+
                 var product = await _context.Products.FindAsync(cartItem.ProductId);
-                if (product == null) continue;
 
                 var orderDetails = new OrderDetails
                 {
-                    OrderId = order.Id,
-                    ProductId = product.Id,
-                    Quantity = cartItem.Quantity,
-                    Price = product.Price
+                     OrderId = order.Id,    
+                     ProductId = product.Id,
+                     Quantity = cartItem.Quantity,
+                     Price = product.Price
                 };
 
                 _context.OrderDetails.Add(orderDetails);
+
                 product.Quantity -= cartItem.Quantity;
-            }
 
-            _context.Cart.RemoveRange(cartItemsFromDb);
-            await _context.SaveChangesAsync();
+             }
 
-            var orderStatus = new OrderStatus
-            {
-                OrderId = order.Id,
-                Status = OrderState.Approved,
-            };
-
-            _context.OrderStatus.Add(orderStatus);
-            await _context.SaveChangesAsync();
-
+             _context.Cart.RemoveRange(cartItems);
+             await _context.SaveChangesAsync();
+            //}
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
         }
 
