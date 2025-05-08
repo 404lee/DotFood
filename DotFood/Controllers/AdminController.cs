@@ -21,12 +21,14 @@ namespace DotFood.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
             return View(users);
         }
-
+        
+        [HttpGet]
         public async Task<IActionResult> Analytics()
         {
             var model = new VendorAnalyticsViewModel
@@ -38,6 +40,7 @@ namespace DotFood.Controllers
             return View(model);
         }
 
+        [HttpGet]
         public async Task<IActionResult> ManageUsers()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -73,7 +76,7 @@ namespace DotFood.Controllers
             {
                 var vendorOrders = await _context.Orders.Where(o => o.VendorId == id).ToListAsync();
                 foreach (var order in vendorOrders)
-                {
+                {   
                     var orderItems = await _context.OrderDetails.Where(oi => oi.OrderId == order.Id).ToListAsync();
                     _context.OrderDetails.RemoveRange(orderItems);
                     _context.Orders.Remove(order);
@@ -112,19 +115,21 @@ namespace DotFood.Controllers
             return RedirectToAction("ManageUsers");
         }
 
-        public async Task<IActionResult> ViewHistory()
+        [HttpGet]
+        public async Task<IActionResult> ViewHistory(string id)
         {
-            var users = await _userManager.Users.ToListAsync();
+            //var users = await _userManager.Users.ToListAsync();
+            var user = await _userManager.FindByIdAsync(id);
             var userHistory = new List<UserHistory>();
 
-            foreach (var user in users)
-            {
+            //foreach (var user in users)
+            //{
                 var roles = await _userManager.GetRolesAsync(user);
 
-                if (roles.Contains("vendor"))
+                if (roles.Contains("Vendor"))
                 {
                     var vendorOrders = await _context.Orders
-                        .Where(o => o.VendorId == user.Id)
+                        .Where(o => o.VendorId == id)
                         .Select(o => new OrderHistory
                         {
                             OrderId = o.Id,
@@ -142,7 +147,7 @@ namespace DotFood.Controllers
                         Orders = vendorOrders
                     });
                 }
-                else if (roles.Contains("customer"))
+                else if (roles.Contains("Customer"))
                 {
                     var customerOrders = await _context.Orders
                         .Where(o => o.CustomerId == user.Id)
@@ -163,7 +168,7 @@ namespace DotFood.Controllers
                         Orders = customerOrders
                     });
                 }
-            }
+            //}
             return View(userHistory);
         }
 

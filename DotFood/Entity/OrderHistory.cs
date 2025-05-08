@@ -3,7 +3,7 @@
 
 namespace DotFood.Controllers
 {
-    internal class OrderHistory
+    public class OrderHistory
     {
         public long OrderId { get; set; }
         public string CustomerName { get; set; }
