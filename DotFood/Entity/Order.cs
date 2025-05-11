@@ -23,13 +23,13 @@ namespace DotFood.Entity
         public string PaymentMethod { get; set; } = "Cash"; 
         public decimal DeliveryFee { get; set; } = 3.0m; // Fixed 3 JDs
 
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
 
-        public virtual Users Customer { get; set; }
-        public virtual Users Vendor { get; set; }
+        public  Users Customer { get; set; }
+        public  Users Vendor { get; set; }
 
         public int OrderStatusId { get; set; }
-        public virtual OrderStatus OrderStatus { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
     }
 }

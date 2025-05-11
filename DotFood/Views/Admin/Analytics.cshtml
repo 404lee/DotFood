@@ -1,5 +1,67 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<div class="outer-container">
+    <div class="inner-container">
+        <div class="button-container">
+        <a asp-action="VendorAnalytics" class="anchor">Vendor Analytics</a>
+        </div>
+        <div class="button-container">
+        <a asp-action="CustomerAnalytics" class="anchor">Customer Analytics</a>
+        </div>
+    </div>
+</div>
+
+<style>
+ 
+    .outer-container
+    {
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        min-height:80vh;
+        text-align:center;
+    }
+    .inner-container
+    {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:1.5rem;
+    }
+    .button-container
+    {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .anchor {
+        padding: 12.5px 30px;
+        border: 0;
+        border-radius: 100px;
+        background-color: #FFA000;
+        color: #000000;
+        font-weight: bold;
+        transition: all 0.5s;
+        -webkit-transition: all 0.5s;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        width: 240px;
+        display: inline-block;
+    }
+    .anchor:hover
+    {
+        background-color: #FF8F00;
+        color: blue;
+        opacity:0.8;
+        transform:scale(1.1);
+    }
+
+
+</style>

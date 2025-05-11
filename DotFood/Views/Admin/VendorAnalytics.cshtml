@@ -1,0 +1,94 @@
+﻿@using DotFood.ViewModel
+@model VendorAnalyticsViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="div1">
+<h3 class="h3"> system : </h3>
+<table>
+    <th>
+        Total Vendors
+    </th>
+    <th>
+        Total Orders 
+    </th>
+    <th>
+        Total Revenue
+    </th>
+    <tr>
+        <td>
+            @Model.TotalVendors
+        </td>
+        <td>
+            @Model.TotalOrders
+        </td>
+        <td>
+            @Model.TotalRevenue
+        </td>
+    </tr>
+</table>
+</div>
+@foreach (var vendor in Model.analyticsViewModelForEachVendor)
+ {
+     <div class="div2">
+    <h3 class="h3">Vendor : @vendor.VendorName</h3>
+    <table>
+        <th>
+          VendorId
+        </th>
+        <th>
+          VendorName          
+        </th>
+        <th>
+            Total Orders
+        </th>
+        <th>
+            Total Revenue
+        </th>        
+        <tr>
+          <td>
+            @vendor.vendorId.Email
+          </td>
+          <td>
+            @vendor.VendorName
+          </td>
+          <td>
+              @vendor.TotalOrders
+          </td>
+          <td>
+            @vendor.TotalRevenue
+          </td>
+        </tr>
+    </table>
+    </div>
+ }
+
+ <style>
+
+     table,th,td,tr{
+        align-items:center;
+        border:1px black solid;
+        text-align:center;
+        padding:10px;
+        margin-left:auto;
+        margin-right: auto;
+     }
+     .div1{
+         margin:0px;
+     } 
+   
+    .div2{
+        margin: 20px;
+    }
+     .h3{
+         text-align:center;
+     }
+
+    tr:nth-child(even) {
+        background-color: #D6EEEE;
+    }
+     
+
+ </style>

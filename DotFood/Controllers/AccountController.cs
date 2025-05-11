@@ -52,7 +52,7 @@ namespace DotFood.Controllers
                 var user = new Users
                 {
                     UserName = model.Email,
-                    Email = model.Email,
+                    Email = model.Email,                    
                     FullName = model.FullName,
                     Country = model.Country,
                     City = model.City

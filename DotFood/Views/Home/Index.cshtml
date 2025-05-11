@@ -4,5 +4,65 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @* <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
+    <div class="container2">
+        <div class="button">
+        <a asp-action = "Login" asp-controller="Account" class="anchor1">
+            Sign-in
+        </a>
+        </div >
+        <div class="button">
+            <a class="anchor2" asp-action="Register" asp-controller="Account">
+           Sign-up
+        </a>
+        </div>
+    </div>
 </div>
+<style>
+    body{
+        background-image: url('Images/food-4k-1pf6px6ryqfjtnyr.jpg');
+        background-attachment:fixed;
+        background-position:center;
+        background-repeat:no-repeat;
+        background-size:cover;
+    }
+    h1,p{
+        color:white;
+    }
+    .container2{
+        border:1px black solid;
+        border-radius:30px;
+        background-color:transparent;
+        display:flex;
+        flex-direction:column;
+        position:absolute;
+        top:50%;
+        left:50%;
+        width:360px;
+        height:220px;
+        transform:translate(-50%,-50%);
+        justify-content:center;
+        align-items:center;
+        backdrop-filter:blur(2.2px);
+        padding:30px;
+    }
+    .anchor1,.anchor2{
+        text-align:center;
+        text-decoration:none;
+        color:white;
+        font-weight:700;
+        font-size:25px;
+    }
+    .button{
+        width:100%;
+        cursor:pointer;
+        border:none;
+        border-radius:60px;
+        background-color:lawngreen;
+        padding:10px;
+        margin:20px;
+    }
+    .button:hover{
+        transform:scale(1.1);
+    }
+</style>

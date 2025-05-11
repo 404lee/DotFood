@@ -204,80 +204,72 @@ namespace DotFood.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PlaceOrder(List<Cart>cartItems)
+        public async Task<IActionResult> PlaceOrder(List<Cart> cartItems)
         {
             var userId = User.Identity.Name;
-            var customer = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserName == userId);
+            var customer = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId);
 
-            if (customer == null) // no loged-in user currentlly
-            {
+            if (customer == null || cartItems == null || !cartItems.Any())
                 return RedirectToAction("Index", "Home");
-            }
 
-            if (cartItems == null || !cartItems.Any())
-            {
-                return RedirectToAction("ViewCart");
-            }
-            
             decimal totalPrice = 0;
             var productForVendor = await _context.Products.FindAsync(cartItems.First().ProductId);
-
             if (productForVendor == null)
-            {
                 return RedirectToAction("ViewCart");
-            }
 
             foreach (var item in cartItems)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
-
                 if (product == null || item.Quantity > product.Quantity || item.Quantity < 1)
-                {   
                     return RedirectToAction("ViewCart");
-                }
 
                 totalPrice += product.Price * item.Quantity;
             }
             
+            
             var order = new Order
             {
-                 CustomerId = customer.Id,
-                 VendorId = productForVendor.VendorId,
-                 OrderDate = DateTime.Now,
-                 TotalPrice = totalPrice + 3.0m,
-                 PaymentMethod = "Cash",
-                 DeliveryFee = 3.0m
+                CustomerId = customer.Id,
+                VendorId = productForVendor.VendorId,
+                OrderDate = DateTime.Now,
+                TotalPrice = totalPrice + 3.0m,
+                PaymentMethod = "Cash",
+                DeliveryFee = 3.0m,
+                OrderStatusId = 1, 
+                OrderDetails = new List<OrderDetails>() 
             };
 
-             _context.Orders.Add(order);
-             await _context.SaveChangesAsync();
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
 
-             
-             foreach (var cartItem in cartItems)
-             {
+            var orderStatus = new OrderStatus
+            {
+                OrderId = order.Id,
+                Status = OrderState.Approved
+            };
+            _context.OrderStatus.Add(orderStatus);
+            await _context.SaveChangesAsync();
 
+            foreach (var cartItem in cartItems)
+            {
                 var product = await _context.Products.FindAsync(cartItem.ProductId);
 
-                var orderDetails = new OrderDetails
+                order.OrderDetails.Add(new OrderDetails
                 {
-                     OrderId = order.Id,    
-                     ProductId = product.Id,
-                     Quantity = cartItem.Quantity,
-                     Price = product.Price
-                };
+                    ProductId = product.Id,
+                    Quantity = cartItem.Quantity,
+                    Price = product.Price
+                });
 
-                _context.OrderDetails.Add(orderDetails);
+                product.Quantity -= cartItem.Quantity; 
+            }
 
-                product.Quantity -= cartItem.Quantity;
+            _context.Cart.RemoveRange(cartItems);
+            await _context.SaveChangesAsync(); // save everything once
 
-             }
-
-             _context.Cart.RemoveRange(cartItems);
-             await _context.SaveChangesAsync();
-            //}
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> OrderConfirmation(long orderId)
@@ -285,16 +277,16 @@ namespace DotFood.Controllers
             var order = await _context.Orders
                 .Include(o => o.OrderStatus)
                 .Include(o => o.OrderDetails)
-                .ThenInclude(od => od.Product)
+                    .ThenInclude(od => od.Product)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index"); // OR return NotFound();
             }
 
             return View(order);
-
         }
+
     }
 }

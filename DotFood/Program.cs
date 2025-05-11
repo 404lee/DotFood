@@ -16,7 +16,7 @@ namespace DotFood
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-   
+                
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
             var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
 

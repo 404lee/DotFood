@@ -31,14 +31,93 @@ namespace DotFood.Controllers
         [HttpGet]
         public async Task<IActionResult> Analytics()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VendorAnalytics()
+        {
+
+            var AnalyticsPerVendor = await _context.Orders
+                .GroupBy(o => o.VendorId)
+                .Select(g => new 
+                {
+                    vendorId = g.Key,
+                    TotalOrders = g.Count(),
+                    TotalRevenue = g.Sum(g=>g.TotalPrice),
+                    vendorName = g.FirstOrDefault().Vendor.FullName
+
+                })
+                .OrderByDescending(v => v.TotalRevenue)
+                .ToListAsync();
+
+            var analyticsList = new List<AnalyticsViewModelForEachVendor>();
+
+            foreach (var item in AnalyticsPerVendor)
+            {
+                var vendorUser = await _userManager.FindByIdAsync(item.vendorId);
+
+                analyticsList.Add(new AnalyticsViewModelForEachVendor
+                {
+                    vendorId = vendorUser,
+                    VendorName = item.vendorName,
+                    TotalOrders = item.TotalOrders,
+                    TotalRevenue = item.TotalRevenue
+                });
+            }
+
             var model = new VendorAnalyticsViewModel
             {
+                analyticsViewModelForEachVendor = analyticsList,
                 TotalRevenue = await _context.Orders.SumAsync(o => o.TotalPrice),
-                TotalVendors = (await _userManager.GetUsersInRoleAsync("vendor")).Count, 
+                TotalVendors = (await _userManager.GetUsersInRoleAsync("Vendor")).Count,
                 TotalOrders = await _context.Orders.CountAsync(),
             };
             return View(model);
+
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CustomerAnalytics()
+        {
+            var AnalyticsPerCutomer = await _context.Orders
+                .GroupBy(c => c.CustomerId)
+                .Select(g => new
+                {
+                    CutsomerId = g.Key,
+                    CustomerName = g.FirstOrDefault().Customer.FullName,
+                    TotalOrders = g.Count(),
+                    TotalRevenue = g.Sum(g => g.TotalPrice),
+                })
+                .OrderByDescending(g => g.TotalRevenue)
+                .ToListAsync();
+
+            var analyticsList = new List<AnalyticsForEachCustomers>();
+
+            foreach (var item in AnalyticsPerCutomer)
+            {
+                var customerUser = await _userManager.FindByIdAsync(item.CutsomerId);
+
+                analyticsList.Add(new AnalyticsForEachCustomers
+                {
+                    CustomerId = customerUser,
+                    CustomerName = item.CustomerName,
+                    TotalOrders = item.TotalOrders,
+                    TotalRevenue = item.TotalRevenue
+                });
+            }
+
+            var model = new CustomerAnalyticsViewModel
+            {
+                analyticsForEachCustomers = analyticsList,
+                TotalRevenue = await _context.Orders.SumAsync(o => o.TotalPrice),
+                TotalCustomers = (await _userManager.GetUsersInRoleAsync("Customer")).Count,
+                TotalOrders = await _context.Orders.CountAsync(),
+            };
+            return View(model);
+
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> ManageUsers()
