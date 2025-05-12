@@ -1,67 +1,86 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Admin Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="outer-container">
-    <div class="inner-container">
+<div class="admin-container">
+    <h3 class="admin-title">DotFood Analytics</h3>
+
+    <div class="admin-actions">
         <div class="button-container">
-        <a asp-action="VendorAnalytics" class="anchor">Vendor Analytics</a>
+            <a asp-action="VendorAnalytics" class="admin-btn">Vendor Analytics</a>
         </div>
         <div class="button-container">
-        <a asp-action="CustomerAnalytics" class="anchor">Customer Analytics</a>
+            <a asp-action="CustomerAnalytics" class="admin-btn">Customer Analytics</a>
         </div>
     </div>
 </div>
 
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+
 <style>
- 
-    .outer-container
-    {
-        display:flex;
-        flex-direction:column;
-        justify-content:center;
-        align-items:center;
-        min-height:80vh;
-        text-align:center;
+    body {
+        background-image: url('/Images/Bg1.png');
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0;
+        font-family: 'Fredoka', sans-serif;
     }
-    .inner-container
-    {
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        gap:1.5rem;
+
+    .admin-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        text-align: center;
+        padding: 2rem;
     }
-    .button-container
-    {
+
+    .admin-title {
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: #FA812F;
+        font-family: "hobo-std", sans-serif;
+        font-weight: 400;
+    }
+
+    .admin-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .button-container {
         display: flex;
         justify-content: center;
         width: 100%;
     }
 
-    .anchor {
+    .admin-btn {
         padding: 12.5px 30px;
-        border: 0;
-        border-radius: 100px;
-        background-color: #FFA000;
-        color: #000000;
-        font-weight: bold;
-        transition: all 0.5s;
-        -webkit-transition: all 0.5s;
-        cursor: pointer;
+        border: none;
+        border-radius: 60px;
+        background-color: #FFB22C;
+        color: black;
+        font-weight: 700;
+        font-size: 20px;
+        transition: all 0.3s ease;
         text-decoration: none;
         text-align: center;
         width: 240px;
         display: inline-block;
-    }
-    .anchor:hover
-    {
-        background-color: #FF8F00;
-        color: blue;
-        opacity:0.8;
-        transform:scale(1.1);
+        font-family: 'Fredoka', sans-serif;
     }
 
+        .admin-btn:hover {
+            background-color: #F3C623;
+            transform: scale(1.1);
+        }
 
+        .admin-btn:active {
+            transform: scale(0.98);
+        }
 </style>

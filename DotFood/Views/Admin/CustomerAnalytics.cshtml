@@ -5,90 +5,112 @@
     ViewData["Title"] = "Admin Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="div1">
-    <h3 class="h3"> system : </h3>
-    <table>
-        <th>
-            Total Customers
-        </th>
-        <th>
-            Total Orders
-        </th>
-        <th>
-            Total Revenue
-        </th>
-        <tr>
-            <td>
-                @Model.TotalCustomers
-            </td>
-            <td>
-                @Model.TotalOrders
-            </td>
-            <td>
-                @Model.TotalRevenue
-            </td>
-        </tr>
+    <h3 class="h3">System Overview:</h3>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Total Customers</th>
+                <th>Total Orders</th>
+                <th>Total Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.TotalCustomers</td>
+                <td>@Model.TotalOrders</td>
+                <td>@Model.TotalRevenue</td>
+            </tr>
+        </tbody>
     </table>
 </div>
-@foreach (var customer in Model.analyticsForEachCustomers)
-{
-    <div class="div2">
-        <h3 class="h3">Customer : @customer.CustomerName</h3>
-        <table>
-            <th>
-                CustomerId
-            </th>
-            <th>
-                CustomerName
-            </th>
-            <th>
-                Total Orders
-            </th>
-            <th>
-                Total Revenue
-            </th>
+
+<div class="div2">
+    <h3 class="h3">Customer Analytics:</h3>
+    <table class="styled-table">
+        <thead>
             <tr>
-                <td>
-                    @customer.CustomerId.Email
-                </td>
-                <td>
-                    @customer.CustomerName
-                </td>
-                <td>
-                    @customer.TotalOrders
-                </td>
-                <td>
-                    @customer.TotalRevenue
-                </td>
+                <th>#</th>
+                <th>Customer Email</th>
+                <th>Customer Name</th>
+                <th>Total Orders</th>
+                <th>Total Revenue</th>
             </tr>
-        </table>
-    </div>
-}
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.analyticsForEachCustomers.Count; i++)
+            {
+                var customer = Model.analyticsForEachCustomers[i];
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@customer.CustomerId.Email</td>
+                    <td>@customer.CustomerName</td>
+                    <td>@customer.TotalOrders</td>
+                    <td>@customer.TotalRevenue</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 <style>
-
-    table, th, td, tr {
-        align-items: center;
-        border: 1px black solid;
-        text-align: center;
-        padding: 10px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .div1 {
-        margin: 0px;
-    }
-
-    .div2 {
-        margin: 20px;
+    body {
+        background-color: #FEF3E2;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+        color: #333;
     }
 
     .h3 {
         text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 20px;
     }
 
-    tr:nth-child(even) {
-        background-color: #D6EEEE;
+    .div1, .div2 {
+        margin: 40px auto;
+        width: 90%;
+        max-width: 1000px;
+        background-color: rgba(254, 243, 226, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        font-size: 16px;
+        min-width: 400px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        background-color: white;
+    }
+
+        .styled-table thead tr {
+            background-color: #FA812F;
+            color: floralwhite;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #FFB22C;
+            text-align: center;
+        }
+
+        .styled-table tbody tr {
+            background-color: white;
+        }
+
+            .styled-table tbody tr:hover {
+                background-color: #FFE1B2;
+            }
 </style>

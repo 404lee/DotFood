@@ -3,50 +3,103 @@
     ViewData["Title"] = "Add Product";
 }
 
-<h2>Add New Product</h2>
+<h2 class="add-item-title">Add New Product</h2>
 
-<form asp-action="AddItem" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+<div class="form-container">
+    <form asp-action="AddItem" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="CategoryId">Category</label>
-        <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+        <div class="form-group">
+            <label asp-for="CategoryId" class="form-label">Category</label>
+            <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
                 <option value="">-- Select Category --</option>
-        </select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
-    </div>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+        <div class="form-group">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Price"></label>
-        <input asp-for="Price" class="form-control" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
+        <div class="form-group">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Quantity"></label>
-        <input asp-for="Quantity" class="form-control" type="number" min="0" />
-        <span asp-validation-for="Quantity" class="text-danger"></span>
-    </div>
- 
-     <div class="form-group">   
-       <label asp-for="ImageFile">Upload Product Image</label>  
-          <br/>
-        <input asp-for="ImageFile" class="form-control-file" type="file" accept="image/*" />
-        <span asp-validation-for="ImageFile" class="text-danger"></span> 
-      </div>
+        <div class="form-group">
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control" type="number" min="0" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
 
-    <br />
-    <button type="submit" class="btn btn-primary">Add Product</button>
-</form>
+        <div class="form-group">
+            <label asp-for="ImageFile" class="form-label">Upload Product Image</label>
+            <input asp-for="ImageFile" class="form-control-file" type="file" accept="image/*" />
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
 
+        <br />
+        <button type="submit" class="btn-custom">Add Product</button>
+    </form>
+</div>
+<style>
+        body {
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: 'Fredoka', sans-serif;
+    }
 
+    .add-item-title {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .form-container {
+        background-color: #ffffffcc;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin: 30px auto;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-control, .form-control-file, select {
+        border-radius: 6px;
+        padding: 10px;
+        margin-top: 5px;
+    }
+
+    .btn-custom {
+        background-color: #FA812F;
+        color: white;
+        font-weight: bold;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-custom:hover {
+        background-color: #e06e24;
+    }
+
+</style>

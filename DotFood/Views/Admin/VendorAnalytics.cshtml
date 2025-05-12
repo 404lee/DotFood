@@ -5,90 +5,112 @@
     ViewData["Title"] = "Admin Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="div1">
-<h3 class="h3"> system : </h3>
-<table>
-    <th>
-        Total Vendors
-    </th>
-    <th>
-        Total Orders 
-    </th>
-    <th>
-        Total Revenue
-    </th>
-    <tr>
-        <td>
-            @Model.TotalVendors
-        </td>
-        <td>
-            @Model.TotalOrders
-        </td>
-        <td>
-            @Model.TotalRevenue
-        </td>
-    </tr>
-</table>
-</div>
-@foreach (var vendor in Model.analyticsViewModelForEachVendor)
- {
-     <div class="div2">
-    <h3 class="h3">Vendor : @vendor.VendorName</h3>
-    <table>
-        <th>
-          VendorId
-        </th>
-        <th>
-          VendorName          
-        </th>
-        <th>
-            Total Orders
-        </th>
-        <th>
-            Total Revenue
-        </th>        
-        <tr>
-          <td>
-            @vendor.vendorId.Email
-          </td>
-          <td>
-            @vendor.VendorName
-          </td>
-          <td>
-              @vendor.TotalOrders
-          </td>
-          <td>
-            @vendor.TotalRevenue
-          </td>
-        </tr>
+    <h3 class="h3">System Overview:</h3>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Total Vendors</th>
+                <th>Total Orders</th>
+                <th>Total Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.TotalVendors</td>
+                <td>@Model.TotalOrders</td>
+                <td>@Model.TotalRevenue</td>
+            </tr>
+        </tbody>
     </table>
-    </div>
- }
+</div>
 
- <style>
+<div class="div2">
+    <h3 class="h3">Vendor Analytics:</h3>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Vendor Email</th>
+                <th>Vendor Name</th>
+                <th>Total Orders</th>
+                <th>Total Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.analyticsViewModelForEachVendor.Count; i++)
+            {
+                var vendor = Model.analyticsViewModelForEachVendor[i];
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@vendor.VendorId.Email</td>
+                    <td>@vendor.VendorName</td>
+                    <td>@vendor.TotalOrders</td>
+                    <td>@vendor.TotalRevenue</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-     table,th,td,tr{
-        align-items:center;
-        border:1px black solid;
-        text-align:center;
-        padding:10px;
-        margin-left:auto;
-        margin-right: auto;
-     }
-     .div1{
-         margin:0px;
-     } 
-   
-    .div2{
-        margin: 20px;
+<style>
+    body {
+        background-color: #FEF3E2;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+        color: #333;
     }
-     .h3{
-         text-align:center;
-     }
 
-    tr:nth-child(even) {
-        background-color: #D6EEEE;
+    .h3 {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 20px;
     }
-     
 
- </style>
+    .div1, .div2 {
+        margin: 40px auto;
+        width: 90%;
+        max-width: 1000px;
+        background-color: rgba(254, 243, 226, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        font-size: 16px;
+        min-width: 400px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        background-color: white;
+    }
+
+        .styled-table thead tr {
+            background-color: #FA812F;
+            color: floralwhite;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #FFB22C;
+            text-align: center;
+        }
+
+        .styled-table tbody tr {
+            background-color: white;
+        }
+
+            .styled-table tbody tr:hover {
+                background-color: #FFE1B2;
+            }
+</style>

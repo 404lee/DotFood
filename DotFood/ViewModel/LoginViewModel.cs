@@ -5,7 +5,7 @@ namespace DotFood.ViewModel
     public class LoginViewModel
     {
         [Required(ErrorMessage = "email is required")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Please enter a valid e-mail address")]
         public String Email { get; set; }
 
         [Required(ErrorMessage = "password is required")]

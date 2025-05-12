@@ -7,20 +7,32 @@
 
     <div class="admin-actions">
         <div class="button-container">
-            <a asp-action="ManageUsers" class="admin-btn manage-users-btn">
+            <a asp-action="ManageUsers" class="admin-btn">
                 Manage Users
             </a>
         </div>
 
         <div class="button-container">
-            <a asp-action="Analytics" class="admin-btn analytics-btn">
+            <a asp-action="Analytics" class="admin-btn">
                 Analytics
             </a>
         </div>
     </div>
 </div>
 
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+
 <style>
+    body {
+        background-image: url('Images/Bg1.png');
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0;
+        font-family: 'Fredoka', sans-serif;
+    }
+
     .admin-container {
         display: flex;
         flex-direction: column;
@@ -34,8 +46,9 @@
     .admin-title {
         font-size: 2.5rem;
         margin-bottom: 3rem;
-        color: #333;
-        font-weight: 300;
+        color: #FA812F; 
+        font-family: "hobo-std";
+        font-weight: 400;
     }
 
     .admin-actions {
@@ -53,31 +66,26 @@
 
     .admin-btn {
         padding: 12.5px 30px;
-        border: 0;
-        border-radius: 100px;
-        background-color: #FFA000;
-        color: #000000;
-        font-weight: bold;
-        transition: all 0.5s;
-        -webkit-transition: all 0.5s;
-        cursor: pointer;
+        border: none;
+        border-radius: 60px;
+        background-color: #FFB22C; 
+        color: black;
+        font-weight: 700;
+        font-size: 20px;
+        transition: all 0.3s ease;
         text-decoration: none;
         text-align: center;
         width: 200px;
         display: inline-block;
+        font-family: 'Fredoka', sans-serif;
     }
 
         .admin-btn:hover {
-            background-color: #FFD54F;
-            box-shadow: 0 0 20px #FFD54F50;
+            background-color: #F3C623; 
             transform: scale(1.1);
         }
 
         .admin-btn:active {
-            background-color: #FFA000;
-            transition: all 0.25s;
-            -webkit-transition: all 0.25s;
-            box-shadow: none;
             transform: scale(0.98);
         }
 </style>

@@ -2,67 +2,88 @@
     ViewData["Title"] = "Home Page";
 }
 
+<h1 class="welcome-text">WELCOME</h1>
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    @* <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
     <div class="container2">
         <div class="button">
-        <a asp-action = "Login" asp-controller="Account" class="anchor1">
-            Sign-in
-        </a>
-        </div >
+            <a asp-action="Login" asp-controller="Account" class="anchor1">
+                Sign-in
+            </a>
+        </div>
         <div class="button">
             <a class="anchor2" asp-action="Register" asp-controller="Account">
-           Sign-up
-        </a>
+                Sign-up
+            </a>
         </div>
     </div>
 </div>
+
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/tri8ckb.css">
+
 <style>
-    body{
-        background-image: url('Images/food-4k-1pf6px6ryqfjtnyr.jpg');
-        background-attachment:fixed;
-        background-position:center;
-        background-repeat:no-repeat;
-        background-size:cover;
+    body {
+        background-image: url('Images/dfBg3.png');
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0;
+        font-family: sans-serif;
     }
-    h1,p{
-        color:white;
+
+    .welcome-text {
+        font-family: "hobo-std", sans-serif;
+        color: #FA812F; 
+        font-size: 72px;
+        margin-top: 50px;
+        text-align: center;
     }
-    .container2{
-        border:1px black solid;
-        border-radius:30px;
-        background-color:transparent;
-        display:flex;
-        flex-direction:column;
-        position:absolute;
-        top:50%;
-        left:50%;
-        width:360px;
-        height:220px;
-        transform:translate(-50%,-50%);
-        justify-content:center;
-        align-items:center;
-        backdrop-filter:blur(2.2px);
-        padding:30px;
+
+    .container2 {
+        border: none;
+        border-radius: 30px;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 360px;
+        height: 220px;
+        transform: translate(-50%, -50%);
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(2.2px);
+        padding: 30px;
     }
-    .anchor1,.anchor2{
-        text-align:center;
-        text-decoration:none;
-        color:white;
-        font-weight:700;
-        font-size:25px;
+
+    .anchor1, .anchor2 {
+        text-align: center;
+        text-decoration: none;
+        color: black; 
+        font-weight: 700;
+        font-size: 25px;
+        font-family: 'Fredoka', sans-serif;
+        display: inline-block;
+        width: 100%;
     }
-    .button{
-        width:100%;
-        cursor:pointer;
-        border:none;
-        border-radius:60px;
-        background-color:lawngreen;
-        padding:10px;
-        margin:20px;
+
+    .button {
+        width: 100%;
+        cursor: pointer;
+        border: none;
+        border-radius: 60px;
+        background-color: #FFB22C;
+        padding: 10px;
+        margin: 20px;
+        transition: all 0.3s ease;
+        text-align: center;
     }
-    .button:hover{
-        transform:scale(1.1);
-    }
+
+        .button:hover {
+            background-color: #F3C623; 
+            transform: scale(1.1);
+        }
 </style>

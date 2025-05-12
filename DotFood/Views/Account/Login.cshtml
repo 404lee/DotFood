@@ -2,48 +2,113 @@
 @model LoginViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-
 @{
     ViewData["Title"] = "Login";
-    Layout = "~/Views/Shared/_AccountLayout.cshtml"; 
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<div>
-    <div class="account-box">
-        <h2 class="text-center mb-4">Login</h2>
-        <form asp-action="Login" method="post" >
+<div class="login-bg">
+    <div class="login-box">
+        <h2 class="login-title">Login</h2>
+        <form asp-action="Login" method="post">
             @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" type="email"/>
-                <span asp-validation-for="Email" class="text-danger"></span>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label fw-bold text-dark"></label>
+                <input asp-for="Email" class="form-control input-custom" type="email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" type="password" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="Password" class="form-label fw-bold text-dark"></label>
+                <input asp-for="Password" class="form-control input-custom" type="password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
             </div>
+
             <div class="form-check mb-3">
-                <label class="form-check-label">
-                    <input asp-for="RememberMe" class="form-check-input" />
-                    @Html.DisplayNameFor(a => a.RememberMe)
-                </label>
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label class="form-check-label">@Html.DisplayNameFor(a => a.RememberMe)</label>
             </div>
-            <input type="submit" value="Login" class="btn btn-success w-100 p-2" />
-            <p class="text-center mt-2">    
+
+            <input type="submit" value="Login" class="btn login-btn w-100 mb-3" />
+
+            <p class="text-center small">
                 Don't have an account?
-                <a asp-controller="Account" asp-action="Register" class="text-decoration-none">Register</a>
+                <a asp-controller="Account" asp-action="Register" class="link-custom">Register</a>
             </p>
-            <div class="text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>
+            <div class="text-center mt-2">
+                <a asp-controller="Home" asp-action="Index" class="link-custom">Back</a>
             </div>
         </form>
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+<style>
+    body {
+        background-color: #FFF6EE;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: 'Segoe UI', sans-serif;
     }
+
+    .login-bg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        padding: 30px 15px;
+    }
+
+    .login-box {
+        background-color: rgba(255, 255, 255, 0.94);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .login-title {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .input-custom {
+        border: 1px solid #FA812F;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .login-btn {
+        background-color: #FA812F;
+        color: white;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .login-btn:hover {
+            background-color: #e06e24;
+        }
+
+    .link-custom {
+        color: #FA812F;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .link-custom:hover {
+            text-decoration: underline;
+        }
+</style>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

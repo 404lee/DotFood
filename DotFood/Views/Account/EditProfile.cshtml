@@ -1,57 +1,125 @@
 ﻿@model DotFood.ViewModel.EditProfileViewModel
 @{
-    ViewData["Title"] = "My Profile";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Edit Profile";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/profile.css" />
+<div class="editprofile-bg">
+    <div class="editprofile-box">
+        <h2 class="editprofile-title">Edit Profile</h2>
 
-<div class="profile-container">
-    <div class="profile-header">
-        <h2>My Profile</h2>
         @if (TempData["StatusMessage"] != null)
         {
-            <div class="alert alert-info alert-dismissible fade show">
+            <div class="alert alert-info alert-dismissible fade show text-center" role="alert">
                 @Html.Raw(TempData["StatusMessage"])
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
-    </div>
-    <div class="profile-section">
-        <div class="profile-section">
-            <div class="profile-card purple-card">
-                <div class="profile-card-header">
-                    <h5>Change Name</h5>
-                </div>
-                <div class="profile-card-body">
-                    <form asp-action="UpdateProfile" method="post">
-                        @Html.AntiForgeryToken()
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label">Full Name</label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Country" class="form-label">Country</label>
-                            <input asp-for="Country" class="form-control" placeholder="e.g. United States" />
-                            <span asp-validation-for="Country" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="City" class="form-label">City</label>
-                            <input asp-for="City" class="form-control" placeholder="e.g. New York" />
-                            <span asp-validation-for="City" class="text-danger"></span>
-                        </div>
-                        <button type="submit" class="btn btn-purple">Save</button>
-                    </form>
-                </div>
-            </div>
-        </div>
 
-        </div>
+        <form asp-action="UpdateProfile" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="form-label fw-bold text-dark"></label>
+                <input asp-for="Name" class="form-control input-custom" />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Country" class="form-label fw-bold text-dark"></label>
+                <input asp-for="Country" class="form-control input-custom" placeholder="e.g. United States" />
+                <span asp-validation-for="Country" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="City" class="form-label fw-bold text-dark"></label>
+                <input asp-for="City" class="form-control input-custom" placeholder="e.g. New York" />
+                <span asp-validation-for="City" class="text-danger small"></span>
+            </div>
+
+            <input type="submit" value="Save" class="btn editprofile-btn w-100 mb-3" />
+
+            <div class="text-center mt-2">
+                <a asp-controller="Home" asp-action="Index" class="link-custom">Back</a>
+            </div>
+        </form>
     </div>
 </div>
 
+<style>
+
+    body {
+        background-color: #FFF6EE;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .editprofile-bg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        padding: 30px 15px;
+    }
+
+    .editprofile-box {
+        background-color: rgba(255, 255, 255, 0.94);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .editprofile-title {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .input-custom {
+        border: 1px solid #FA812F;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .editprofile-btn {
+        background-color: #FA812F;
+        color: white;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .editprofile-btn:hover {
+            background-color: #e06e24;
+        }
+
+    .link-custom {
+        color: #FA812F;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .link-custom:hover {
+            text-decoration: underline;
+        }
+</style>
+
 @section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+
+@* @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -74,4 +142,4 @@
             console.log(`${type}: ${message}`);
         }
     </script>
-}
+} *@

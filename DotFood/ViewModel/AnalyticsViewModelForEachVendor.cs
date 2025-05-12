@@ -4,7 +4,7 @@ namespace DotFood.ViewModel
 {
     public class AnalyticsViewModelForEachVendor
     {
-        public Users vendorId { get; set; }
+        public Users VendorId { get; set; }
         public Users user { get; set; }
 
         public int TotalOrders { get; set; }

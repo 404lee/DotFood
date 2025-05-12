@@ -29,10 +29,6 @@ namespace DotFood.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var products = await _context.Products
-            //    .Include(p => p.Category)
-            //    .ToListAsync();
-
             var vendors = await _userManager.GetUsersInRoleAsync("vendor");
 
             return View(vendors);
@@ -89,7 +85,7 @@ namespace DotFood.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(long productId,int quantity,double totalPrice)
         {
-            var userId = User.Identity.Name; //currentlly loged-in user
+            var userId = User.Identity.Name; 
             var customer = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserName == userId);
 
@@ -265,7 +261,7 @@ namespace DotFood.Controllers
             }
 
             _context.Cart.RemoveRange(cartItems);
-            await _context.SaveChangesAsync(); // save everything once
+            await _context.SaveChangesAsync(); 
 
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
         }
@@ -282,7 +278,7 @@ namespace DotFood.Controllers
 
             if (order == null)
             {
-                return RedirectToAction("Index"); // OR return NotFound();
+                return RedirectToAction("Index"); 
             }
 
             return View(order);
