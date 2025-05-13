@@ -1,66 +1,140 @@
 ﻿@using DotFood.ViewModel
-@model RegisterViewModel;
+@model RegisterViewModel
+
 @{
     ViewData["Title"] = "Register";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<div>
-    <div class="account-box">
-        <h2 class="text-center mb-4">Register</h2>
+<div class="register-bg">
+    <div class="register-box">
+        <h2 class="register-title">Register</h2>
         <form asp-action="Register" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="FullName" class="form-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-3">
+               <label asp-for="FullName" class="form-label fw-bold text-dark">Full Name</label>
+               <input asp-for="FullName" class="form-control input-custom" />
+               <span asp-validation-for="FullName" class="text-danger small"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label fw-bold text-dark"></label>
+                <input asp-for="Email" class="form-control input-custom" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="Password" class="form-label fw-bold text-dark"></label>
+                <input asp-for="Password" class="form-control input-custom" type="password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="ConfirmPassword" class="form-label fw-bold text-dark"></label>
+                <input asp-for="ConfirmPassword" class="form-control input-custom" type="password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Role" class="form-label"></label>
-                <select asp-for="Role" class="form-control">
+
+            <div class="form-group mb-3">
+                <label asp-for="Role" class="form-label fw-bold text-dark"></label>
+                <select asp-for="Role" class="form-control input-custom">
                     <option value="customer">Customer</option>
                     <option value="vendor">Vendor</option>
                 </select>
-                <span asp-validation-for="Role" class="text-danger"></span>
+                <span asp-validation-for="Role" class="text-danger small"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Country" class="form-label"></label>
-                <input asp-for="Country" class="form-control" />
-                <span asp-validation-for="Country" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="Country" class="form-label fw-bold text-dark"></label>
+                <input asp-for="Country" class="form-control input-custom" />
+                <span asp-validation-for="Country" class="text-danger small"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="City" class="form-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="City" class="form-label fw-bold text-dark"></label>
+                <input asp-for="City" class="form-control input-custom" />
+                <span asp-validation-for="City" class="text-danger small"></span>
             </div>
-            <input type="submit" value="Next" class="btn btn-success w-100 p-2" />
-            <p class="text-center mt-2">
+
+            <input type="submit" value="Next" class="btn register-btn w-100 mb-3" />
+
+            <p class="text-center small">
                 Already have an account?
-                <a asp-controller="Account" asp-action="Login" class="text-decoration-none">Login</a>
+                <a asp-controller="Account" asp-action="Login" class="link-custom">Login</a>
             </p>
-            <div class="text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>
+            <div class="text-center mt-2">
+                <a asp-controller="Home" asp-action="Index" class="link-custom">Back</a>
             </div>
         </form>
     </div>
 </div>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+
+<style>
+    body {
+        background-color: #FFF6EE;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: 'Segoe UI', sans-serif;
     }
+
+    .register-bg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        padding: 30px 15px;
+    }
+
+    .register-box {
+        background-color: rgba(255, 255, 255, 0.94);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .register-title {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .input-custom {
+        border: 1px solid #FA812F;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .register-btn {
+        background-color: #FA812F;
+        color: white;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .register-btn:hover {
+            background-color: #e06e24;
+        }
+
+    .link-custom {
+        color: #FA812F;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .link-custom:hover {
+            text-decoration: underline;
+        }
+</style>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

@@ -1,73 +1,148 @@
 ﻿@using DotFood.Controllers
-@using DotFood.Entity  
+@using DotFood.Entity
 
-@model List<UserHistory>  
+@model List<UserHistory>
 
-@{  
-  ViewData["Title"] = "View History";  
-  Layout = "~/Views/Shared/_Layout.cshtml";  
-}  
+@{
+    ViewData["Title"] = "View History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<div class="container mt-4">  
-  <h2 class="text-center mb-4">View History</h2>   
+<div class="div1">
+    <h2 class="h2">View History</h2>
 
-  @if (Model.Any(u => u.Role == "Customer"))  
-  {  
-      <h3 class="mt-4">Customer : @Model[0].FullName</h3>  
-      <table class="table table-bordered table-striped">  
-          <thead class="thead-dark">  
-              <tr>  
-                  <th>Order Number</th>  
-                  <th>Date of Order Placed</th>  
-                  <th>Order Price</th>  
-              </tr>  
-          </thead>  
-          <tbody>  
-              @foreach (var user in Model.Where(u => u.Role == "Customer"))  
-              {  
-                  if (user.Orders is IEnumerable<OrderHistory> orders)  
-                  {  
-                      foreach (var order in orders)     
-                      {  
-                          <tr>  
-                              <td>@order.OrderId</td>  
-                              <td>@order.OrderDate.ToString("MM/dd/yyyy")</td>  
-                              <td>@order.TotalPrice.ToString("C")</td>  
-                          </tr>  
-                      }  
-                  }  
-              }  
-          </tbody>  
-      </table>  
-  }  
+    @if (Model.Any(u => u.Role == "Customer"))
+    {
+        <h3 class="section-title">Customer : @Model[0].FullName</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                   <th>Order Number</th>
+                   <th>OrderId</th>
+                   <th>Date of Order Placed</th>
+                   <th>Vendor Name</th>
+                   <th>Order Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                   @foreach (var user in Model.Where(u => u.Role == "Customer"))
+                   {
+                       if (user.Orders is IEnumerable<OrderHistory> orders)
+                        {
+                         int counter = 1;
+                         foreach (var order in orders)
+                         {
+                         <tr>
+                         <td>@counter</td>
+                         <td>@order.OrderId</td>
+                         <td>@order.OrderDate.ToString("MM/dd/yyyy")</td>
+                         <td>@order.VendorName</td>
+                         <td>@order.TotalPrice.ToString("C")</td>
+                         </tr>
+                         counter++;
+                         }
+                       }
+                   }
+                </tbody>
+        </table>
+    }
 
-  @if (Model.Any(u => u.Role == "Vendor"))  
-  {  
-      <h3 class="mt-4">Vendor : @Model[0].FullName</h3>  
-      <table class="table table-bordered table-striped">  
-          <thead class="thead-dark">  
-              <tr>  
-                  <th>Order Number</th>  
-                  <th>Date of Order Placed</th>  
-                  <th>Total Sales Per Order</th>  
-              </tr>  
-          </thead>  
-          <tbody>  
-              @foreach (var user in Model.Where(u => u.Role == "Vendor"))  
-              {  
-                  if (user.Orders is IEnumerable<OrderHistory> orders)  
-                  {  
-                      foreach (var order in orders)  
-                      {  
-                          <tr>  
-                              <td>@order.OrderId</td>  
-                              <td>@order.OrderDate.ToString("MM/dd/yyyy")</td>  
-                              <td>@order.TotalPrice.ToString("C")</td>  
-                          </tr>  
-                      }  
-                  }  
-              }  
-          </tbody>  
-      </table>  
-  }  
+    @if (Model.Any(u => u.Role == "Vendor"))
+    {
+        <h3 class="section-title">Vendor : @Model[0].FullName</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Order Number</th>
+                    <th>OrderId</th>
+                    <th>Date of Order Placed</th>
+                    <th>Customer Name</th>
+                    <th>Order Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Where(u => u.Role == "Vendor"))
+                {
+                    if (user.Orders is IEnumerable<OrderHistory> orders)
+                    {
+                        int counter = 1;
+                        foreach (var order in orders)
+                        {
+                            <tr>
+                                <td>@counter</td>
+                                <td>@order.OrderId</td>
+                                <td>@order.OrderDate.ToString("MM/dd/yyyy")</td>
+                                <td>@order.CustomerName</td>
+                                <td>@order.TotalPrice.ToString("C")</td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    
+    }
 </div>
+
+<style>
+    body {
+        background-color: #FEF3E2;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+    }
+
+    .div1 {
+        margin: 40px auto;
+        width: 90%;
+        max-width: 1000px;
+        background-color: rgba(254, 243, 226, 0.92);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .h2 {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    .section-title {
+        color: #333;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 30px 0 15px;
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 16px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .styled-table thead tr {
+            background-color: #FA812F;
+            color: white;
+            text-align: center;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 16px;
+            border: 1px solid #FFB22C;
+            text-align: center;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #FFE1B2;
+        }
+</style>

@@ -3,101 +3,88 @@
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
+<h1 class="welcome-text">WELCOME</h1>
+
 <div class="text-center">
-    @* <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
-    
-    <h1 class="h1">Welcome</h1>
-
-        <a asp-action="Login" asp-controller="Account" class="button-link">
-            <div class="button">
-                <span class="anchor1">Sign-in</span>
-            </div>
-        </a>
-
-        <a class="button-link" asp-action="Register" asp-controller="Account">
-            <div class="button">
-                <span class="anchor2">Sign-up</span>
-            </div>
-        </a>
-
-        
+    <div class="container2">
+        <div class="button">
+            <a asp-action="Login" asp-controller="Account" class="anchor1">
+                Sign-in
+            </a>
+        </div>
+        <div class="button">
+            <a class="anchor2" asp-action="Register" asp-controller="Account">
+                Sign-up
+            </a>
+        </div>
+    </div>
 </div>
+
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/tri8ckb.css">
+
 <style>
-    body{
-        background-image: url('Images/food-4k-1pf6px6ryqfjtnyr.jpg');
-        background-attachment:fixed;
-        background-position:center;
-        background-repeat:no-repeat;
-        background-size:cover;
-    }
-    h1,p{
-        color:white;
-        font-weight:bold;
+    body {
+        background-image: url('Images/dfBg3.png');
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0;
+        font-family: sans-serif;
     }
 
-    .h1
-    {
-        position:relative;
-        font-family:Verdana;
-        margin:10px;
-        font-size:4em;
+    .welcome-text {
+        font-family: "hobo-std", sans-serif;
+        color: #FA812F; 
+        font-size: 72px;
+        margin-top: 50px;
+        text-align: center;
     }
-    .text-center{
+
+    .container2 {
+        border: none;
+        border-radius: 30px;
+        background-color: transparent;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%,-50%);
-        border:none;
-        border-radius: 30px;
-        background-color: transparent;
         width: 360px;
-        height: 320px;
-        backdrop-filter: blur(3.2px);
-        box-shadow:0px 0px 50px black,10px 10px 10px black;
+        height: 220px;
+        transform: translate(-50%, -50%);
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(2.2px);
+        padding: 30px;
     }
-   
-    .button-link{
-        position: relative;
-        width:100%;
-        display: block;
-        width: 100%;
+
+    .anchor1, .anchor2 {
+        text-align: center;
         text-decoration: none;
-    }
-    .anchor1,.anchor2{
-        
-        display:inline-block;
-        text-align:center;
-        text-decoration:none;
-        color:white;
-        font-weight:700;
-        font-size:25px;
-    }
-    .button{
-        position:relative;
-        left:10%;
-        width:80%;
-        cursor:pointer;
-        border:none;
-        border-radius:60px;
-        background-color:lawngreen;
-        padding:10px;
-        margin:15px 0px 15px 0px;
-        text-align:center;
-        transition:transform 0.2s;
-    }
-    .button:hover{
-        transform:scale(1.1);
-    }
-    .anchor2:hover{
-        color:black;
+        color: black; 
+        font-weight: 700;
+        font-size: 25px;
+        font-family: 'Fredoka', sans-serif;
+        display: inline-block;
+        width: 100%;
     }
 
-    .anchor1:hover{
-
-        color:black;
+    .button {
+        width: 100%;
+        cursor: pointer;
+        border: none;
+        border-radius: 60px;
+        background-color: #FFB22C;
+        padding: 10px;
+        margin: 20px;
+        transition: all 0.3s ease;
+        text-align: center;
     }
+
+        .button:hover {
+            background-color: #F3C623; 
+            transform: scale(1.1);
+        }
 </style>

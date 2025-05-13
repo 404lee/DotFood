@@ -37,16 +37,14 @@ namespace DotFood.Controllers
         [HttpGet]
         public async Task<IActionResult> VendorAnalytics()
         {
-
             var AnalyticsPerVendor = await _context.Orders
                 .GroupBy(o => o.VendorId)
-                .Select(g => new 
+                .Select(g => new
                 {
-                    vendorId = g.Key,
+                    VendorId = g.Key,
+                    VendorName = g.FirstOrDefault().Vendor.FullName,
                     TotalOrders = g.Count(),
-                    TotalRevenue = g.Sum(g=>g.TotalPrice),
-                    vendorName = g.FirstOrDefault().Vendor.FullName
-
+                    TotalRevenue = g.Sum(o => o.TotalPrice),
                 })
                 .OrderByDescending(v => v.TotalRevenue)
                 .ToListAsync();
@@ -55,15 +53,17 @@ namespace DotFood.Controllers
 
             foreach (var item in AnalyticsPerVendor)
             {
-                var vendorUser = await _userManager.FindByIdAsync(item.vendorId);
+                var vendorUser = await _userManager.FindByIdAsync(item.VendorId);
+
 
                 analyticsList.Add(new AnalyticsViewModelForEachVendor
                 {
-                    vendorId = vendorUser,
-                    VendorName = item.vendorName,
+                    VendorId = vendorUser,
+                    VendorName = item.VendorName,
                     TotalOrders = item.TotalOrders,
                     TotalRevenue = item.TotalRevenue
                 });
+
             }
 
             var model = new VendorAnalyticsViewModel
@@ -73,9 +73,10 @@ namespace DotFood.Controllers
                 TotalVendors = (await _userManager.GetUsersInRoleAsync("Vendor")).Count,
                 TotalOrders = await _context.Orders.CountAsync(),
             };
-            return View(model);
 
+            return View(model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> CustomerAnalytics()

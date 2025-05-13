@@ -270,7 +270,7 @@ namespace DotFood.Controllers
             }
 
             _context.Cart.RemoveRange(cartItems);
-            await _context.SaveChangesAsync(); // save everything once
+            await _context.SaveChangesAsync(); 
 
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
         }
@@ -287,7 +287,7 @@ namespace DotFood.Controllers
 
             if (order == null)
             {
-                return RedirectToAction("Index"); // OR return NotFound();
+                return RedirectToAction("Index"); 
             }
 
             return View(order);
