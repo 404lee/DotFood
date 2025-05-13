@@ -73,6 +73,9 @@ namespace DotFood.Data
                 .HasForeignKey(p => p.VendorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Product>()
+            .HasCheckConstraint("CK_Products_Quantity_NonNegative", "[Quantity] >= 0");
+
             // VendorStatus - User
             modelBuilder.Entity<VendorStatus>()
                 .HasOne(v => v.User)

@@ -9,7 +9,7 @@
 
 <div class="container mt-5">
 
-    @if (!Model.Any())
+    @if(!Model.Any())
     {
         <h1 style="color:red;text-align:center;font-size:30px">No Products available currently </h1>
     }
@@ -20,7 +20,7 @@
         <div class="row">
             @foreach (var product in Model)
             {
-                @if (product.Quantity != 0)
+                @if (product.Quantity > 0)
                 {
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm border-0 h-100">
@@ -38,7 +38,7 @@
                                 <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@product.Id, @product.Quantity)">+</button>
                             </div>
 
-                            @if (product.Quantity != 0)
+                            @if (product.Quantity > 0)
                             {
                                 <form method="post" action="/Customer/AddToCart" id="form-@product.Id">
                                     <input type="hidden" name="productId" value="@product.Id" />

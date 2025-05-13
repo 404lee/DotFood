@@ -94,7 +94,7 @@ namespace DotFood.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(long productId,int quantity,double totalPrice)
         {
-            var userId = User.Identity.Name; //currentlly loged-in user
+            var userId = User.Identity.Name; 
             var customer = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserName == userId);
 
@@ -134,7 +134,7 @@ namespace DotFood.Controllers
                     {
                         CustomerId = customer.Id,
                         ProductId = product.Id,
-                        Quantity = quantity,
+                        Quantity = quantity > 0 ? quantity : 0,
                         TotalPrice = totalPrice
                     };
                     _context.Cart.Add(cartItem);
@@ -152,7 +152,7 @@ namespace DotFood.Controllers
                     {
                         CustomerId = customer.Id,
                         ProductId = product.Id,
-                        Quantity = quantity,
+                        Quantity = quantity > 0 ? quantity : 0,
                         TotalPrice = totalPrice
                     };
                     _context.Cart.Add(cartItem);
