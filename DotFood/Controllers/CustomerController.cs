@@ -29,11 +29,16 @@ namespace DotFood.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var products = await _context.Products
-            //    .Include(p => p.Category)
-            //    .ToListAsync();
 
             var vendors = await _userManager.GetUsersInRoleAsync("vendor");
+
+            foreach (var vendor in vendors)
+            {
+                var vendorstatus = await _context.VendorStatus.Where(v => v.UserId == vendor.Id).FirstOrDefaultAsync();
+
+                vendor.VendorStatus = vendorstatus;
+            }
+            await _context.SaveChangesAsync();
 
             return View(vendors);
         }

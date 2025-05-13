@@ -14,6 +14,8 @@
         {
             foreach (var vendor in Model)
             {
+                if (vendor.VendorStatus.Status == StoreStatus.Open)  
+                {  
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm border-0 h-100">
                         <div class="card-body">
@@ -28,10 +30,11 @@
                             }
                         </div>
                         <div class="card-footer bg-transparent border-0 text-end">
-                            <a href="/Customer/ViewCategories/@vendor.Id" class="btn btn-outline-primary btn-sm">View Items</a>
+                            <a href="/Customer/ViewCategories/@vendor.Id" class="btn btn-outline-primary btn-sm" >View Items</a>
                         </div>
                     </div>
-                </div>
+                </div> 
+                }       
             }
         }
         else
