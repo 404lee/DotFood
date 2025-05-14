@@ -282,6 +282,7 @@ namespace DotFood.Controllers
                 OrderId = order.Id,
                 Status = OrderState.Approved
             };
+
             _context.OrderStatus.Add(orderStatus);
             await _context.SaveChangesAsync();
 

@@ -151,6 +151,11 @@ namespace DotFood.Controllers
             {
                 Categories = categories
             };
+
+            if (TempData["Message"]!=null)
+            {
+                ViewBag.Message = TempData["Message"].ToString();
+            }
             return View(model);
         }
         [HttpPost]
@@ -190,6 +195,7 @@ namespace DotFood.Controllers
             {
                 model.imageName = "";
             }
+
             if (!ModelState.IsValid)
             {
                 model.Categories = await _context.Category.ToListAsync();
@@ -207,6 +213,7 @@ namespace DotFood.Controllers
                 model.Categories = await _context.Category.ToListAsync();
                 return View(model);
             }
+
             var product = new Product
             {
                 Name = model.Name,
@@ -214,15 +221,16 @@ namespace DotFood.Controllers
                 Description = model.Description,
                 Price = model.Price,
                 Quantity = model.Quantity,
-                VendorId = vendor.Id,
+                VendorId = vendor.Id,   
                 CreatedAt = DateTime.UtcNow, //Coordinated Universal Time
                 imageName = model.imageName
             };
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Item added successfully!";
-            return RedirectToAction("Index", "Vendor");
+
+            TempData["Message"] = "✔️ Item added successfully! ✔️";
+            return RedirectToAction("AddItem","Vendor");
         }
 
         [HttpPost]

@@ -22,7 +22,7 @@ namespace DotFood.Helpers
      public async Task InvokeAsync(HttpContext context)
      {
          var token = context.Request.Cookies["jwt"];
-
+                
          if (!string.IsNullOrEmpty(token))
          {
              try
