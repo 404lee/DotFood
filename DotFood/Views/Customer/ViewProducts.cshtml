@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Products";
     Layout = "~/Views/Shared/_Layout.cshtml";   
-    
+
     var addedProductIds = ViewBag.AddingToCart as List<long> ?? new List<long>();
 
 
@@ -13,13 +13,24 @@
 
 <div class="container mt-5">
 
+    @foreach(var product in Model)
+    {
+        if(product.Quantity == 0 && Model.Count == 1)
+        {
+            <h1 style="color:red;text-align:center;font-size:30px">No Products available currently </h1>
+        }
+    }
+
     @if(!Model.Any())
     {
         <h1 style="color:red;text-align:center;font-size:30px">No Products available currently </h1>
     }
     else
     {
-        <h2 class="mb-4 text-center">Products</h2>
+        if (!(Model[0].Quantity == 0 && Model.Count == 1))
+        {
+            <h2 class="mb-4 text-center">Products</h2>
+        }
         <h5 style="color:red;text-align:center">@ViewBag.VendorError</h5>
         <div class="row">
             @foreach (var product in Model)
