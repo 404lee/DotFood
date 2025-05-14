@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using DotFood.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using DotFood.Migrations;
+using System.Reflection.Metadata.Ecma335;
 
 namespace DotFood.Controllers
 {
@@ -63,6 +64,28 @@ namespace DotFood.Controllers
             {
                 ViewBag.VendorError = TempData["VendorError"].ToString();
             }
+            
+            var CartProducts = await _context.Products
+            .Where(p => p.VendorId == vendorId && p.CategoryId == categoryId).ToListAsync();
+
+            var addedProductIds = new List<long>();
+
+            foreach (var product in CartProducts)
+            {
+                if (product != null)
+                {
+                    var cartItem = await _context.Cart
+                        .FirstOrDefaultAsync(c => c.ProductId == product.Id);
+
+                    if (cartItem != null)
+                    {
+                        addedProductIds.Add(product.Id);
+                    }
+                }
+            }
+
+            ViewBag.AddingToCart = addedProductIds;
+
             var products = await _context.Products
                 .Where(p => p.VendorId == vendorId && p.CategoryId == categoryId)
                 .ToListAsync();
@@ -113,7 +136,12 @@ namespace DotFood.Controllers
             {
                 return RedirectToAction("Index");
             }
-                     
+
+            if (quantity < 0)
+            {
+                return View();
+            }
+
             var cart = await _context.Cart.FirstOrDefaultAsync(c => c.CustomerId == customer.Id);
 
             var cartItemm = await _context.Cart
@@ -121,8 +149,8 @@ namespace DotFood.Controllers
                 .Include(cart => cart.Product)
                 .FirstOrDefaultAsync();
 
-            var currentVendorId = cartItemm?.Product.VendorId;  
-
+            var currentVendorId = cartItemm?.Product.VendorId;
+            
             if (cart == null)
             {
                 var existingCartItem = await _context.Cart
@@ -134,11 +162,12 @@ namespace DotFood.Controllers
                     {
                         CustomerId = customer.Id,
                         ProductId = product.Id,
-                        Quantity = quantity > 0 ? quantity : 0,
+                        Quantity = quantity > 0 ? quantity : 1,
                         TotalPrice = totalPrice
                     };
                     _context.Cart.Add(cartItem);
                     await _context.SaveChangesAsync();
+                 
                 }
             } 
             else if (product.VendorId == cartItemm?.Product.VendorId)
@@ -152,11 +181,12 @@ namespace DotFood.Controllers
                     {
                         CustomerId = customer.Id,
                         ProductId = product.Id,
-                        Quantity = quantity > 0 ? quantity : 0,
+                        Quantity = quantity > 0 ? quantity : 1,
                         TotalPrice = totalPrice
                     };
                     _context.Cart.Add(cartItem);
                     await _context.SaveChangesAsync();
+              
                 }
             }
             else
@@ -270,6 +300,7 @@ namespace DotFood.Controllers
             }
 
             _context.Cart.RemoveRange(cartItems);
+
             await _context.SaveChangesAsync(); 
 
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
