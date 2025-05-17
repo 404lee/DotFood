@@ -33,6 +33,8 @@ namespace DotFood.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Seed();
+
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Food" },
                 new Category { Id = 2, Name = "Drinks" },

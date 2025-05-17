@@ -232,7 +232,10 @@ namespace DotFood.Migrations
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", t =>
+                        {
+                            t.HasCheckConstraint("CK_Products_Quantity_NonNegative", "[Quantity] >= 0");
+                        });
                 });
 
             modelBuilder.Entity("DotFood.Entity.UserAddress", b =>
@@ -340,6 +343,27 @@ namespace DotFood.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "b3c0f8a5-5678-4901-9012-abcdef123456",
+                            AccessFailedCount = 0,
+                            City = "City",
+                            ConcurrencyStamp = "1c24992e-2a5d-4128-a662-eb4b6806a031",
+                            Country = "Country",
+                            Email = "admin@example.com",
+                            EmailConfirmed = true,
+                            FullName = "Admin User",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "ADMIN@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEN1vyd46yTHzXQu3nraB3TxRY4zrBksasDfY9JhUQnEpafSZn2CtR7W5mD0+7QsLKw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "919776ae-72a7-400b-9ca6-0c266e985a91",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@example.com"
+                        });
                 });
 
             modelBuilder.Entity("DotFood.Entity.VendorStatus", b =>
@@ -390,6 +414,14 @@ namespace DotFood.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a2b9e7f4-1234-4567-890a-123456789abc",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -477,6 +509,13 @@ namespace DotFood.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "b3c0f8a5-5678-4901-9012-abcdef123456",
+                            RoleId = "a2b9e7f4-1234-4567-890a-123456789abc"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

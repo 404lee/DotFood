@@ -152,7 +152,7 @@ namespace DotFood.Controllers
             var user = await _userManager.FindByIdAsync(id);
             var roles = await _userManager.GetRolesAsync(user);
 
-            if (roles.Contains("vendor"))
+            if (roles.Contains("Vendor"))
             {
                 var vendorOrders = await _context.Orders.Where(o => o.VendorId == id).ToListAsync();
                 foreach (var order in vendorOrders)
@@ -172,7 +172,7 @@ namespace DotFood.Controllers
                     _context.Products.Remove(product);
                 }
             }
-            else if (roles.Contains("customer"))
+            else if (roles.Contains("Customer"))
             {
                 var customerOrders = await _context.Orders.Where(o => o.CustomerId == id).ToListAsync();
                 foreach (var order in customerOrders)
@@ -181,6 +181,9 @@ namespace DotFood.Controllers
                     _context.OrderDetails.RemoveRange(orderItems);
                     _context.Orders.Remove(order);
                 }
+                var cartItems = await _context.Cart.Where(c => c.CustomerId == id).ToListAsync();
+                _context.Cart.RemoveRange(cartItems);
+
             }
             await _context.SaveChangesAsync();
             var result = await _userManager.DeleteAsync(user);

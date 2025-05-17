@@ -90,6 +90,25 @@ namespace DotFood.Controllers
             return View();
         }
 
+
+        //[HttpGet]
+        //public async Task<IActionResult> FixAdminPassword()
+        //{
+        //    var user = await _userManager.FindByEmailAsync("admin@example.com");
+
+        //    if (user == null)
+        //        return Content("Admin user not found.");
+
+        //    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        //    var result = await _userManager.ResetPasswordAsync(user, token, "Admin@1234");
+
+        //    if (result.Succeeded)
+        //        return Content("✅ Admin password reset successfully.");
+
+        //    return Content("❌ Password reset failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+        //}
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -121,10 +140,9 @@ namespace DotFood.Controllers
 
                     return RedirectToDashboard(role);
                 }
-
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
-
+            //return RedirectToAction("FixAdminPassword");
             return View(model);
         }
 

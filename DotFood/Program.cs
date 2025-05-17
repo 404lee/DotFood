@@ -98,8 +98,7 @@ namespace DotFood
 
                     var userManager = services.GetRequiredService<UserManager<Users>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-                    await InitializeAdminUser(userManager, roleManager);
+ 
                 }
                 catch (Exception ex)
                 {
@@ -115,8 +114,10 @@ namespace DotFood
             }
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
             app.UseRouting();
+
             app.UseMiddleware<JwtCookieAuthenticationMiddleware>();
 
             app.UseAuthentication();
@@ -133,32 +134,6 @@ namespace DotFood
             app.Run();
         }
 
-        private static async Task InitializeAdminUser(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager)
-        {
-            var roleExist = await roleManager.RoleExistsAsync("Admin");
-            if (!roleExist)
-            {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
-            }
-
-            var adminUser = await userManager.FindByEmailAsync("admin@example.com");
-            if (adminUser == null)
-            {
-                adminUser = new Users
-                {
-                    UserName = "admin@example.com",
-                    Email = "admin@example.com",
-                    FullName = "Admin User",
-                    Country = "Country",
-                    City = "City"
-                };
-                var result = await userManager.CreateAsync(adminUser, "Admin@1234");
-
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(adminUser, "Admin");
-                }
-            }
-        }
+        
     }
 }

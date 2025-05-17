@@ -217,7 +217,7 @@ namespace DotFood.Controllers
             var product = new Product
             {
                 Name = model.Name,
-                CategoryId = model.CategoryId,
+                CategoryId = (model.CategoryId >= 1 && model.CategoryId <= 3) ? model.CategoryId : 1 ,
                 Description = model.Description,
                 Price = model.Price,
                 Quantity = model.Quantity,
