@@ -18,16 +18,16 @@
 </head>
 <body>
     <header>
-            <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container-fluid">
-                    <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse"
-                    aria-controls="navbarCollapse"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
                 <div class="collapse navbar-collapse" id="navbarCollapse">
 
@@ -61,7 +61,11 @@
                                             </a>
                                         </li>
                                     }
-                                    <li><a class="dropdown-item" href="/Account/EditProfile">Profile</a></li>
+                               
+                                    @if (!User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item" href="/Account/EditProfile">Profile</a></li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="post" asp-controller="Account" asp-action="Logout" style="display:inline;">

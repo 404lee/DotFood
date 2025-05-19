@@ -80,9 +80,15 @@ namespace DotFood
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedAccount = false;
                 options.SignIn.RequireConfirmedEmail = false;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
             })
             .AddEntityFrameworkStores<UsersContext>()
             .AddDefaultTokenProviders();
+            //
             builder.Services.AddSingleton<JwtHelper>();
 
             var app = builder.Build();
@@ -98,13 +104,16 @@ namespace DotFood
 
                     var userManager = services.GetRequiredService<UserManager<Users>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
- 
+
+                    // Call the seeding method 
+                    await AdminSeeder.SeedAdminAsync(services);
                 }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred during migration or admin user setup");
                 }
+
             }
 
             if (!app.Environment.IsDevelopment())

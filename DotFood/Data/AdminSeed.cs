@@ -4,48 +4,43 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DotFood.Data
 {
-    public static class AdminSeed
+    public static class AdminSeeder
     {
-        public static void Seed(this ModelBuilder modelBuilder)
+        public static async Task SeedAdminAsync(IServiceProvider serviceProvider)
         {
-            
-            string adminUserId = "b3c0f8a5-5678-4901-9012-abcdef123456";
-            string adminRoleId = "a2b9e7f4-1234-4567-890a-123456789abc";
-                
-            //Admin password : Admin@1234
+            var userManager = serviceProvider.GetRequiredService<UserManager<Users>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            string passwordHash = "AQAAAAEAACcQAAAAEN1vyd46yTHzXQu3nraB3TxRY4zrBksasDfY9JhUQnEpafSZn2CtR7W5mD0+7QsLKw==";
+            string adminEmail = "admin@example.com";
+            string adminPassword = "Admin@1234";
 
-            
-            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+            if (!await roleManager.RoleExistsAsync("Admin"))
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
             {
-                Id = adminRoleId,
-                Name = "Admin",
-                NormalizedName = "ADMIN"
-            });
+                var user = new Users
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    FullName = "Admin User",
+                    Country = "Country",
+                    City = "City",
+                    EmailConfirmed = true
+                };
 
-            
-            modelBuilder.Entity<Users>().HasData(new Users
-            {
-                Id = adminUserId,
-                UserName = "admin@example.com",
-                NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                Email = "admin@example.com",
-                NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                EmailConfirmed = true,
-                PasswordHash = passwordHash,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                FullName = "Admin User",
-                Country = "Country",
-                City = "City"
-            });
-
-            
-            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-            {
-                RoleId = adminRoleId,
-                UserId = adminUserId
-            });
+                var result = await userManager.CreateAsync(user, adminPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
+                else
+                {
+                    throw new Exception("Failed to create admin: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+            }
         }
     }
 }
+

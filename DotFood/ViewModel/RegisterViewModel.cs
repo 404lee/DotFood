@@ -15,6 +15,7 @@ namespace DotFood.ViewModel
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
+        [RegularExpression(@"^(?!.*@example\.com$).+", ErrorMessage = "Email cannot end with '@example.com'")]
         public String Email { get; set; }
 
 

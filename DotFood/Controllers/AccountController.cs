@@ -44,7 +44,6 @@ namespace DotFood.Controllers
         }
 
         [HttpPost]
-    //    [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -73,9 +72,7 @@ namespace DotFood.Controllers
 
 
                     return RedirectToAction("Index", "Home");
-                }
-
-          
+                } 
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
@@ -89,8 +86,6 @@ namespace DotFood.Controllers
         {
             return View();
         }
-
-
         //[HttpGet]
         //public async Task<IActionResult> FixAdminPassword()
         //{
@@ -107,7 +102,6 @@ namespace DotFood.Controllers
 
         //    return Content("❌ Password reset failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
         //}
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -145,7 +139,6 @@ namespace DotFood.Controllers
             //return RedirectToAction("FixAdminPassword");
             return View(model);
         }
-
 
         private IActionResult RedirectToDashboard(string role)
         {
@@ -231,7 +224,5 @@ namespace DotFood.Controllers
                       ModelState.AddModelError(string.Empty, error.Description);   
             }
         }
-
-
     }
 }
