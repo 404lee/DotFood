@@ -14,8 +14,11 @@
         {
             foreach (var vendor in Model)
             {
-                if (vendor.VendorStatus.Status == StoreStatus.Open)  
-                {  
+
+                if (vendor.VendorStatus != null && vendor.VendorStatus.Status == StoreStatus.Open)
+
+@*                     if (vendor.VendorStatus.Status == StoreStatus.Open)  
+ *@                {  
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm border-0 h-100">
                         <div class="card-body">
