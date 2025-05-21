@@ -53,8 +53,69 @@
         </tbody>
     </table>
 </div>
+<button onclick="history.back()" class="go-back-button" type="button">
+    <div class="go-back-icon">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 1024 1024"
+             height="25px"
+             width="25px">
+            <path d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+                  fill="#000000"></path>
+            <path d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                  fill="#000000"></path>
+        </svg>
+    </div>
+    <p class="go-back-text">Go Back</p>
+</button>
 
 <style>
+    .go-back-button {
+        background-color: white;
+        position: relative;
+        width: 12rem; /* w-48 */
+        height: 3.5rem; /* h-14 */
+        border-radius: 1rem; /* rounded-2xl */
+        font-size: 1.25rem; /* text-xl */
+        font-weight: 600;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+    }
+
+    .go-back-icon {
+        background-color: #FA812F;
+        border-radius: 1rem; /* match parent fully */
+        height: 100%;
+        width: 25%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        transition: width 0.5s ease;
+    }
+
+    .go-back-text {
+        transform: translateX(0.5rem);
+        z-index: 2;
+        transition: opacity 0.4s ease;
+        color: #FA812F
+    }
+
+    .go-back-button:hover .go-back-icon {
+        width: 100%;
+    }
+
+    .go-back-button:hover .go-back-text {
+        opacity: 0;
+    }
+
     body {
         background-color: #FEF3E2;
         background-image: url('/Images/Bg1.png');

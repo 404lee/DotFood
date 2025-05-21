@@ -1,41 +1,36 @@
 ﻿@using DotFood.Entity
 @model List<Users>
+
 @{
     ViewData["Title"] = "Vendors";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-<div class="container mt-5">
-    <h2 class="mb-4 text-center">Meet Our Vendors</h2>
+<div class="vendor-container">
+    <h2 class="vendor-heading">Meet Our Vendors</h2>
     <div class="row">
         @if (Model != null && Model.Any())
         {
             foreach (var vendor in Model)
             {
-
                 if (vendor.VendorStatus != null && vendor.VendorStatus.Status == StoreStatus.Open)
-                {  
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary">@vendor.FullName</h5>
-                            <p class="card-text"><strong>Email:</strong> @vendor.Email</p>
-                            @if (!string.IsNullOrEmpty(vendor.City) || !string.IsNullOrEmpty(vendor.Country))
-                            {
-                                <p class="card-text">
-                                    <strong>Location:</strong>
-                                    @($"{vendor.City}, {vendor.Country}")
-                                </p>
-                            }
-                        </div>
-                        <div class="card-footer bg-transparent border-0 text-end">
-                            <a href="/Customer/ViewCategories/@vendor.Id" class="btn btn-outline-primary btn-sm" >View Items</a>
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="vendor-card">
+                            <div class="vendor-card-body">
+                                <h5 class="vendor-title">@vendor.FullName</h5>
+                                <p><strong>Email:</strong> @vendor.Email</p>
+                                @if (!string.IsNullOrEmpty(vendor.City) || !string.IsNullOrEmpty(vendor.Country))
+                                {
+                                    <p><strong>Location:</strong> @($"{vendor.City}, {vendor.Country}")</p>
+                                }
+                            </div>
+                            <div class="vendor-card-footer">
+                                <a href="/Customer/ViewCategories/@vendor.Id" class="view-btn">View Items</a>
+                            </div>
                         </div>
                     </div>
-                </div> 
-                }       
+                }
             }
         }
         else
@@ -49,4 +44,77 @@
     </div>
 </div>
 
+<style>
+    body {
+        background-color: #FEF3E2;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
 
+    .vendor-container {
+        margin: 40px auto;
+        width: 90%;
+        max-width: 1200px;
+        background-color: rgba(254, 243, 226, 0.95);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .vendor-heading {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    .vendor-card {
+        background-color: white;
+        border: 1px solid #FFB22C;
+        border-radius: 10px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s, background-color 0.3s;
+    }
+
+        .vendor-card:hover {
+            background-color: #FFF3E3;
+            transform: translateY(-4px);
+        }
+
+    .vendor-title {
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .vendor-card-body p {
+        margin-bottom: 8px;
+    }
+
+    .vendor-card-footer {
+        text-align: right;
+        margin-top: 15px;
+    }
+
+    .view-btn {
+        background-color: transparent;
+        color: #FA812F;
+        border: 1px solid #FA812F;
+        padding: 6px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .view-btn:hover {
+            background-color: #FA812F;
+            color: white;
+        }
+</style>

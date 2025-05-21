@@ -1,26 +1,160 @@
 ﻿@using DotFood.ViewModels
-@model ProductViewModel;
+@model ProductViewModel
+
 @{
     ViewData["Title"] = "Categories";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-<div class="container mt-5">
-    <h2 class="mb-4 text-center">Categories</h2>
+<div class="category-container">
+    <h2 class="category-heading">Categories</h2>
     <div class="row">
-            @foreach (var productViewModel in Model.Categories)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary">@productViewModel.Name</h5>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 text-end">
-                         <a href="/Customer/ViewProducts?vendorId=@Model.VendorId &categoryId=@productViewModel.Id" class="btn btn-outline-primary btn-sm">View Products</a> 
-                        </div>
+        @foreach (var productViewModel in Model.Categories)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="category-card">
+                    <div class="category-card-body">
+                        <h5 class="category-title">@productViewModel.Name</h5>
+                    </div>
+                    <div class="category-card-footer">
+                        <a href="/Customer/ViewProducts?vendorId=@Model.VendorId&categoryId=@productViewModel.Id" class="view-btn">View Products</a>
                     </div>
                 </div>
-            }
-        
+            </div>
+        }
+        <button onclick="history.back()" class="go-back-button" type="button">
+            <div class="go-back-icon">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 1024 1024"
+                     height="25px"
+                     width="25px">
+                    <path d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+                          fill="#000000"></path>
+                    <path d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                          fill="#000000"></path>
+                </svg>
+            </div>
+            <p class="go-back-text">Go Back</p>
+        </button>
+
+
+
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #FEF3E2;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    .category-container {
+        margin: 40px auto;
+        width: 90%;
+        max-width: 1200px;
+        background-color: rgba(254, 243, 226, 0.95);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-heading {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    .category-card {
+        background-color: white;
+        border: 1px solid #FFB22C;
+        border-radius: 10px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s, background-color 0.3s;
+    }
+
+        .category-card:hover {
+            background-color: #FFF3E3;
+            transform: translateY(-4px);
+        }
+
+    .category-title {
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .category-card-footer {
+        text-align: right;
+        margin-top: 15px;
+    }
+
+    .view-btn {
+        background-color: transparent;
+        color: #FA812F;
+        border: 1px solid #FA812F;
+        padding: 6px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .view-btn:hover {
+            background-color: #FA812F;
+            color: white;
+        }
+    .go-back-button {
+        background-color: white;
+        position: relative;
+        width: 12rem; /* w-48 */
+        height: 3.5rem; /* h-14 */
+        border-radius: 1rem; /* rounded-2xl */
+        font-size: 1.25rem; /* text-xl */
+        font-weight: 600;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+    }
+
+    .go-back-icon {
+        background-color: #FA812F; /* green */
+        border-radius: 1rem; /* match parent fully */
+        height: 100%;
+        width: 25%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        transition: width 0.5s ease;
+    }
+
+    .go-back-text {
+        transform: translateX(0.5rem);
+        z-index: 2;
+        transition: opacity 0.4s ease;
+        color: #FA812F
+    }
+
+    .go-back-button:hover .go-back-icon {
+        width: 100%;
+    }
+
+    .go-back-button:hover .go-back-text {
+        opacity: 0;
+    }
+</style>

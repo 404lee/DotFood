@@ -1,80 +1,237 @@
 ﻿@using DotFood.Entity
 @model List<Product>
+
 @{
     ViewData["Title"] = "Products";
-    Layout = "~/Views/Shared/_Layout.cshtml";   
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
     var addedProductIds = ViewBag.AddingToCart as List<long> ?? new List<long>();
-
-
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-<div class="container mt-5">
-
-    @foreach(var product in Model)
+<div class="product-container">
+    @foreach (var product in Model)
     {
-        if(product.Quantity == 0 && Model.Count == 1)
+        if (product.Quantity == 0 && Model.Count == 1)
         {
-            <h1 style="color:red;text-align:center;font-size:30px">No Products available currently </h1>
+            <h1 class="no-products-msg">No Products available currently</h1>
         }
     }
 
-    @if(!Model.Any())
+    @if (!Model.Any())
     {
-        <h1 style="color:red;text-align:center;font-size:30px">No Products available currently </h1>
+        <h1 class="no-products-msg">No Products available currently</h1>
     }
     else
     {
         if (!(Model[0].Quantity == 0 && Model.Count == 1))
         {
-            <h2 class="mb-4 text-center">Products</h2>
+            <h2 class="product-heading">Products</h2>
         }
-        <h5 style="color:red;text-align:center">@ViewBag.VendorError</h5>
+
+        <h5 class="vendor-error">@ViewBag.VendorError</h5>
+
         <div class="row">
             @foreach (var product in Model)
             {
-                @if (product.Quantity > 0)
+                if (product.Quantity > 0)
                 {
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body">
-                            @if (!string.IsNullOrEmpty(product.imageName))
-                            {
-                                <img src="/Images/@product.imageName" width="100" height="100" />
-                            }
-                            <h5 class="card-title text-primary">@product.Name</h5>
-                            <p class="card-text text-primary">@product.Description</p>
-                            <p class="card-text text-primary">@product.Price</p>
-                            <div class="input-group mb-3 justify-content-center">
-                                <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(@product.Id, @product.Quantity)">-</button>
-                                <input type="number" id="quantity-@product.Id" name="quantity" value="1" min="1" class="form-control text-center" style="width: 70px;" readonly />
-                                <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@product.Id, @product.Quantity)">+</button>
-                            </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="product-card">
+                            <div class="product-card-body">
+                                @if (!string.IsNullOrEmpty(product.imageName))
+                                {
+                                    <img src="/Images/@product.imageName" width="100" height="100" />
+                                }
+                                <h5 class="product-title">@product.Name</h5>
+                                <p class="product-description">@product.Description</p>
+                                <p class="product-price">$@product.Price</p>
 
-                            @if (product.Quantity > 0)
-                            {
+                                <div class="input-group mb-3 justify-content-center">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(@product.Id, @product.Quantity)">-</button>
+                                    <input type="number" id="quantity-@product.Id" name="quantity" value="1" min="1" class="form-control text-center" style="width: 70px;" readonly />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@product.Id, @product.Quantity)">+</button>
+                                </div>
+
                                 <form method="post" action="/Customer/AddToCart" id="form-@product.Id">
                                     <input type="hidden" name="productId" value="@product.Id" />
                                     <input type="hidden" id="hidden-quantity-@product.Id" name="quantity" value="1" />
                                     <input type="hidden" id="hidden-totalPrice-@product.Id" name="totalPrice" value="@product.Price" />
-                                    <button type="submit" class="btn btn-outline-primary btn-sm" onclick="prepareForm(@product.Id, @product.Price)">Add to cart</button>
-                                        @if (addedProductIds.Contains(product.Id))
-                                        {
-                                            <span style="color:green; font-weight:bold;">✔ Added to cart</span>
-                                        }
+                                    <button type="submit" class="add-cart-btn" onclick="prepareForm(@product.Id, @product.Price)">Add to cart</button>
+                                    @if (addedProductIds.Contains(product.Id))
+                                    {
+                                        <span class="added-to-cart-msg">✔ Added to cart</span>
+                                        <a href="/Customer/ViewCart" class="view-cart-link" style="margin-left: 10px; 
+                                        color: #FA812F; text-decoration: underline;"><strong>View cart</strong></a>
 
+                                    }
                                 </form>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
-                }    
+                }
             }
+      
         </div>
-        }
+        <button onclick="history.back()" class="go-back-button" type="button">
+            <div class="go-back-icon">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 1024 1024"
+                     height="25px"
+                     width="25px">
+                    <path d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+                          fill="#000000"></path>
+                    <path d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                          fill="#000000"></path>
+                </svg>
+            </div>
+            <p class="go-back-text">Go Back</p>
+        </button>
+    }
 </div>
+
+<style>
+    body {
+        background-color: #FEF3E2;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    .product-container {
+        margin: 40px auto;
+        width: 90%;
+        max-width: 1200px;
+        background-color: rgba(254, 243, 226, 0.95);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-heading {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    .vendor-error {
+        color: red;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .no-products-msg {
+        color: red;
+        text-align: center;
+        font-size: 30px;
+    }
+
+    .product-card {
+        background-color: white;
+        border: 1px solid #FFB22C;
+        border-radius: 10px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s, background-color 0.3s;
+    }
+
+        .product-card:hover {
+            background-color: #FFF3E3;
+            transform: translateY(-4px);
+        }
+
+    .product-title {
+        color: #FA812F;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .product-description {
+        color: #555;
+    }
+
+    .product-price {
+        color: #FA812F;
+        font-weight: 600;
+    }
+
+    .add-cart-btn {
+        background-color: transparent;
+        color: #FA812F;
+        border: 1px solid #FA812F;
+        padding: 6px 12px;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+
+        .add-cart-btn:hover {
+            background-color: #FA812F;
+            color: white;
+        }
+
+    .added-to-cart-msg {
+        color: green;
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+        .go-back-button
+
+    }
+
+    .go-back-button {
+        background-color: white;
+        position: relative;
+        width: 12rem; /* w-48 */
+        height: 3.5rem; /* h-14 */
+        border-radius: 1rem; /* rounded-2xl */
+        font-size: 1.25rem; /* text-xl */
+        font-weight: 600;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+    }
+
+    .go-back-icon {
+        background-color: #FA812F;
+        border-radius: 1rem; /* match parent fully */
+        height: 100%;
+        width: 25%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        transition: width 0.5s ease;
+    }
+
+    .go-back-text {
+        transform: translateX(0.5rem);
+        z-index: 2;
+        transition: opacity 0.4s ease;
+        color: #FA812F
+    }
+
+    .go-back-button:hover .go-back-icon {
+        width: 100%;
+    }
+
+    .go-back-button:hover .go-back-text {
+        opacity: 0;
+    }
+  
+</style>
 
 <script>
     function incrementQuantity(productId, quantity) {
@@ -100,6 +257,6 @@
 
         var quantity = parseInt(quantityInput.value);
         hiddenQuantity.value = quantity;
-        hiddenTotalPrice.value = (price * quantity).toFixed(2); // Set the total price
+        hiddenTotalPrice.value = (price * quantity).toFixed(2);
     }
 </script>

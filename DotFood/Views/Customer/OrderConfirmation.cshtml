@@ -1,70 +1,125 @@
 ﻿@using DotFood.Entity
 @model DotFood.Entity.Order
 
+@{
+    ViewData["Title"] = "Order Confirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-<div class="container mt-5">
-    <div class="text-center mb-5">
-        <h1 class="text-success">Thank You! Your order has been received</h1>
+<div class="div1">
+    <div class="text-center mb-4">
+        <h3 class="h3 title-font">Thank You! Your order has been received</h3>
     </div>
 
-    <div class="card shadow-sm mb-5">
-        <div class="card-header bg-primary text-white">
-            <h4>Order Summary</h4>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered text-center">
-                <thead class="table-light">
-                    <tr>
-                        <th>Order Number</th>
-                        <th>Order Date</th>
-                        <th>Total Price</th>
-                        <th>Delivery Fee</th>
-                        <th>Payment Method</th>
-                        <th>Order Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>@Model.Id</td>
-                        <td>@Model.OrderDate.ToString("yyyy-MM-dd HH:mm")</td>
-                        <td>@Model.TotalPrice.ToString("0.00") $</td>
-                        <td>@Model.DeliveryFee.ToString("0.00") $</td>
-                        <td>@Model.PaymentMethod</td>
-                        <td>@Model.OrderStatus.Status</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="mb-5">
+        <h4 class="title-font">Order Summary</h4>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Order Number</th>
+                    <th>Order Date</th>
+                    <th>Total Price</th>
+                    <th>Delivery Fee</th>
+                    <th>Payment Method</th>
+                    <th>Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Id</td>
+                    <td>@Model.OrderDate.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@Model.TotalPrice.ToString("0.00") $</td>
+                    <td>@Model.DeliveryFee.ToString("0.00") $</td>
+                    <td>@Model.PaymentMethod</td>
+                    <td>@Model.OrderStatus.Status</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
-            <h4>Order Details</h4>
-        </div>
-        <div class="card-body">
-            <table class="table table-striped table-bordered text-center">
-                <thead class="table-dark">
+    <div>
+        <h4 class="title-font">Order Details</h4>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var orderDetails in Model.OrderDetails)
+                {
                     <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price per Unit</th>
-                        <th>Total Price</th>
+                        <td>@(orderDetails.Product?.Name ?? "Missing Product")</td>
+                        <td>@orderDetails.Quantity</td>
+                        <td>@orderDetails.Price.ToString("0.00") $</td>
+                        <td>@($"{orderDetails.Price * orderDetails.Quantity:0.00}") $</td>
                     </tr>
-                </thead>
-                <tbody>                                 
-                       @foreach (var orderDetails in Model.OrderDetails)
-                       {
-                           <tr>
-                               <td>@(orderDetails.Product?.Name ?? "Missing Product")</td>
-                               <td>@orderDetails.Quantity</td>
-                               <td>@orderDetails.Price.ToString("0.00") $</td>
-                               <td>@($"{orderDetails.Price * orderDetails.Quantity:0.00}")$</td>
-                           </tr>
-                       }
-                </tbody>
-            </table>
-         </div>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
+<style>
+
+    body {
+        background-color: #FEF3E2;
+        background-image: url('/Images/Bg1.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    .h3 {
+        text-align: center;
+        color: #FA812F;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .title-font {
+        font-family: "hobo-std", sans-serif;
+    }
+
+    .div1 {
+        margin: 40px auto;
+        width: 90%;
+        max-width: 1000px;
+        background-color: rgba(254, 243, 226, 0.95);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 16px;
+        background-color: white;
+        margin-bottom: 20px;
+    }
+
+        .styled-table thead tr {
+            background-color: #FA812F;
+            color: floralwhite;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #FFB22C;
+            text-align: center;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #FFE1B2;
+        }
+
+</style>
+
